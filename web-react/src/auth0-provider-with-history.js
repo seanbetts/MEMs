@@ -16,7 +16,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
         <Auth0Provider
             domain={domain}
             clientId={clientId}
-            redirectUri={'http://localhost:3000/useraccount/dashboard'}
+            redirectUri={'https://nervous-fermi-a3c398.netlify.app/useraccount'}
             onRedirectCallback={onRedirectCallback}
         >
             {children}

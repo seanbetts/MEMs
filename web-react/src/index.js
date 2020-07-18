@@ -10,7 +10,6 @@ import './index.css'
 
 import Home from './components/Home';
 import UserAccount from './components/UserAccount/UserAccount';
-import MEMsGrid from './components/UserAccount/MemsGrid';
 import NotFoundPage from './NotFoundPage';
 
 // import App from './App'
@@ -31,8 +30,7 @@ const Main = () => (
           <Auth0ProviderWithHistory>
             <Switch>
               <Route exact path="/" component={Home} />
-              <PrivateRoute path="/useraccount/dashboard" component={UserAccount} />
-              <Route exact path="/useraccount/memsgrid" component={MEMsGrid} />
+              <PrivateRoute path="/useraccount" component={UserAccount} />
               <Route path="*" component={NotFoundPage} />
               <Redirect to="/404" />
             </Switch>
