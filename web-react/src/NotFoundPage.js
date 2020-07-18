@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
+import Copyright from './components/Copyright'
 
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -11,20 +12,6 @@ import {
   Container,
   Link as MUILink,
 } from '@material-ui/core'
-
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <MUILink color="inherit" href="https://www.seanbetts.com/">
-        MEMs
-        </MUILink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
