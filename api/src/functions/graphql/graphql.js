@@ -10,10 +10,10 @@ const neo4j = require('neo4j-driver')
 const { typeDefs } = require('./graphql-schema')
 
 const driver = neo4j.driver(
-  process.env.NEO4J_URI || 'bolt://localhost:7687',
+  process.env.NEO4J_URI || 'bolt://35.234.149.240:7687/graphql',
   neo4j.auth.basic(
     process.env.NEO4J_USER || 'neo4j',
-    process.env.NEO4J_PASSWORD || 'neo4j'
+    process.env.NEO4J_PASSWORD || '72fofH0oav'
   ),
   {
     encrypted: process.env.NEO4J_ENCRYPTED ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF',

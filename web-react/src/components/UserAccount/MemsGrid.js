@@ -196,7 +196,7 @@ const MemsGrid = (props, i) => {
                 })}
                 <span> at</span> {memID.place
                     .map((place, i) => <span key={i}>{place.place}</span>)}</p>
-        } else { return <p><div>&nbsp;</div></p> }
+        } else { return <div><p>&nbsp;</p></div> }
     }
 
     const { loading, data, error } = useQuery(GET_MEM)
