@@ -1,0 +1,43 @@
+﻿personID,Nickname,FirstName,LastName,Relationship,FirstMemory,LastMemory,mems,unsortedMems
+1,Mum,Jane,Betts,Mother,1980-06-26,,"1,2,7,3,5,8,64,63,62,61,60,59,58,57,56,55,54,53,52,50,51,49,48,46,41,40,38,37,36,35,34,32,31,30,29,28,26,23,20,18,16,14,12,10,24,4,6,21","Fish & chips after swimming,Repton,Getting cross at losing cards,Mum tells us she's leaving Dad,Alex’s Wedding"
+2,Dad,Tony,Betts,Father,1980-06-26,,"1,2,7,3,5,8,64,63,62,61,60,59,58,57,56,55,54,53,52,50,51,49,48,46,41,40,38,37,36,35,34,32,31,30,29,28,26,23,20,18,16,14,12,10,4,6,21","Getting cross at losing cards,Alex’s Wedding,Karen’s Wedding"
+3,Chrissie,Chrissie,Betts,Sister,1982-07-08,,"7,3,5,8,64,63,62,61,60,59,58,57,56,55,54,53,52,50,51,49,48,46,41,40,38,37,36,35,34,32,31,30,29,28,26,23,20,18,16,14,12,10,21","Fish & chips after swimming,Repton,Getting cross at losing cards,Bodyboarding,Rock Jumping,Playing at the arcade,Mum tells us she's leaving Dad,Karen taking us to the cinema,Alex’s Wedding,Karen’s Wedding"
+4,G,Georgia,Betts,Wife,2002-02-19,,"42,43,44,45",
+5,Leni,Leni,Betts,Daughter,2010-04-08,,,
+6,Arlo,Arlo,Betts,Son,2011-10-07,,,
+7,Thomas Gillhespie,Thomas,Gillhespie,School Friend,,,,
+8,David Duffield,David,Duffield,School Friend,,,,
+9,Charlie Millibanks,Charlie,Millibanks,School Friend,,,,
+10,Francis Fisher,Francis,Fisher,School Friend,,,,
+11,Doug,Douglas,Heard,Childhood Friend,,,"39,33,24,47",
+12,Ben Aves,Ben,Aves,"Adult Friend,Work Colleague",,,,Elbow Gig
+13,Rachel McClennan,Rachel,McClennan,Work Colleague,,,,Razorlight Live
+14,Ollie,Oliver,Horwich-Smith,Childhood Friend,,,,
+15,Vicky Goodenough,Vicky,Goodenough,Childhood Friend,,,,
+16,Ed,Ed,Smith,Childhood Friend,1996-08-23,,33,
+17,Hugh Swire,Hugh,Swire,School Friend,,,,
+18,Dom,Dominic,Cauldwell,Childhood Friend,,,,
+19,Gus,Gus,Gallagher,Childhood Friend,,,47,
+20,Mairead,Mairead,Kelly,"Girlfriend,Childhood Friend",,,47,
+21,Miz,Miriam,Howard,Childhood Friend,,,47,
+22,Anna,Anna,Garvey,Childhood Friend,,,47,
+23,Kat,Katherine,Fletcher,Childhood Friend,,,47,
+24,Pob,,,Childhood Friend,,,,
+25,Emma,Emma,,Childhood Friend,,,47,
+26,Wayne,Wayne,,Childhood Friend,,,,
+27,Georgie,Georgina,Lee,Childhood Friend,,,,
+28,Simon Zuckerberg,Simon,Zuckerberg,Childhood Friend,,,,
+29,Rich,Richard,Bookey,Childhood Friend,,,,
+30,Ruth,Ruth,Hooper,Girlfriend,,,,
+31,Helen,Helen,,"Girlfriend,University Friend",,,,
+32,Eric,Eric,Burl,"University Friend,Adult Friend",,,,
+33,Dan,Daniel,Norman,"University Friend,Adult Friend",,,,
+34,Alex,Alex,Stamp,"University Friend,Adult Friend",,,,
+35,Pete,Pete,Blacow,"University Friend,Adult Friend",,,,
+36,Karen,Karen,Betts,Sister,,,,"Karen taking us to the cinema,Alex’s Wedding"
+37,Alex,Alex,Betts,Brother,,,,"Alex’s Wedding,Karen’s Wedding"
+38,Sadie,Sadie,Metherell,Sister-In-Law,2003-02-20,,,
+39,Bonnie,Bonnie,Metherell,Sister-In-Law,2003-04-25,,44,
+40,Phil,Philip,Metherell,Father-In-Law,2003-04-25,,44,
+41,Lesley,Lesley,Metherell,Mother-In-Law,2003-04-25,,44,
+42,Kiri,Kiri,Gallagher,Childhood Friend,,,47,
