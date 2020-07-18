@@ -1,0 +1,110 @@
+//Database Build Queries
+
+// Load Mems.csv
+LOAD CSV WITH HEADERS FROM 'file:///Mems.csv' AS row
+CALL apoc.create.node(['Mem'],{memID: toInteger(row.memID), mem: row.mem, date: date(row.date), memType: row.memType, emoji: row.emoji, pictures: (row.Pictures), notes: (row.Notes), personID: split(row.People,","), placeID: split(row.Place,",")})
+YIELD node
+RETURN node;
+
+//Create memsID Constraint
+CREATE CONSTRAINT memsID
+ON (n:Mems)
+ASSERT n.memsID IS UNIQUE;
+
+// Load Person.csv
+LOAD CSV WITH HEADERS FROM 'file:///Person.csv' AS row
+CALL apoc.create.node(['Person'],{personID: toInteger(row.personID), nickname: row.Nickname, firstName: row.FirstName, lastName: row.LastName, relationship: split(row.Relationship,","), firstMemory: date(row.FirstMemory), lastMemory: date(row.LastMemory) })
+YIELD node
+RETURN node;
+
+//Create personID Constraint
+CREATE CONSTRAINT personID
+ON (n:Person)
+ASSERT n.personID IS UNIQUE;
+
+// Load Place.csv
+LOAD CSV WITH HEADERS FROM 'file:///Place.csv' AS row
+CALL apoc.create.node(['Place'],{placeID: toInteger(row.placeID), place: row.Place, city: (row.City), postcode: (row.postcode), firstMemory: date(row.FirstMemory), lastMemory: date(row.LastMemory), location: (row.Location), notes: (row.Notes)})
+YIELD node
+RETURN node;
+
+//Create placeID Constraint
+CREATE CONSTRAINT placeID
+ON (n:Place)
+ASSERT n.placeID IS UNIQUE;
+
+// Load Music.csv
+LOAD CSV WITH HEADERS FROM 'file:///Music.csv' AS row
+CALL apoc.create.node(['Music'],{musicID: toInteger(row.musicID), album: row.Album, artist: row.Artist, releaseDate: date(row.ReleaseDate), genre: row.Genre, style:row.Style, albumArt:(row.AlbumArt), wikipediaPage: (row.WikipediaPage)})
+YIELD node
+RETURN node;
+
+//Create musicID Constraint
+CREATE CONSTRAINT musicID
+ON (n:Music)
+ASSERT n.musicID IS UNIQUE;
+
+// Load Movie.csv
+LOAD CSV WITH HEADERS FROM 'file:///Movie.csv' AS row
+CALL apoc.create.node(['Movie'],{movieID: toInteger(row.movieID), movie: row.Movie, releaseDate: date(row.ReleaseDate), director: row.Director, genre: split(row.Genre,","), imdbRating: row.IMDB_Rating, description: (row.Synopsis), poster:(row.Poster), imdbPage: (row.IMDB_Page)})
+YIELD node
+RETURN node;
+
+//Create movieID Constraint
+CREATE CONSTRAINT movieID
+ON (n:Movie)
+ASSERT n.memsID IS UNIQUE;
+
+// Load TV Show.csv
+LOAD CSV WITH HEADERS FROM 'file:///TVShow.csv' AS row
+CALL apoc.create.node(['TVShow'],{tvshowID: toInteger(row.tvshowID), tvshow: row.TVShow, releaseDate: date(row.ReleaseDate), creator: row.Creator, genre: split(row.Genre,","), description: (row.Synopsis), poster:(row.Poster), wikipediaPage: (row.WikipediaPage)})
+YIELD node
+RETURN node;
+
+//Create tvshowID Constraint
+CREATE CONSTRAINT tvshowID
+ON (n:TVShow)
+ASSERT n.tvshowID IS UNIQUE;
+
+// Load Game.csv
+LOAD CSV WITH HEADERS FROM 'file:///Game.csv' AS row
+CALL apoc.create.node(['Game'],{gameID: toInteger(row.gameID), game: row.Game, releaseDate: date(row.ReleaseDate), platform: split(row.Platform,","), developer: (row.Developer), genre: split(row.Genre,","), description: (row.Description), boxArt:(row.BoxArt), wikipediaPage: (row.WikipediaPage), relatedGames: split(row.RelatedGames,",")})
+YIELD node
+RETURN node;
+
+//Create gamesID Constraint
+CREATE CONSTRAINT gamesID
+ON (n:Games)
+ASSERT n.gamesID IS UNIQUE;
+
+// Mem - [WITH] -> Person
+MATCH (m:Mem)
+UNWIND m.personID as person
+MERGE (p:Person{personID: TOINTEGER(person)})
+MERGE (m)-[:WITH]->(p);
+
+// Mem - [AT] -> Place
+MATCH (m:Mem)
+UNWIND m.placeID as place
+MERGE (p:Place{placeID: TOINTEGER(place)})
+MERGE (m)-[:AT]->(p);
+
+// Mem - [LISTENED_TO] -> Music
+MATCH (m1:Mem), (m2:Music)
+WHERE m1.mem = m2.album AND m1.memType="Music"
+CREATE (m1)-[r:LISTENED_TO]->(m2);
+
+// Mem - [WATCHED] -> Movie
+MATCH (m1:Mem), (m2:Movie)
+WHERE m1.mem = m2.movie AND m1.memType="Movie"
+CREATE (m1)-[r:WATCHED]->(m2);
+
+// Mem - [WATCHED] -> TV Show
+MATCH (m:Mem), (t:TVShow)
+WHERE m.mem = t.tvshow AND m.memType="TVShow"
+CREATE (m)-[r:WATCHED]->(t);
+
+// Mem - [PLAYED] -> Game
+MATCH (m:Mem), (g:Game)
+WHERE m.mem = g.game AND m.memType="Game"
+CREATE (m)-[r:PLAYED]->(g)
