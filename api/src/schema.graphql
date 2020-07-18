@@ -1,64 +1,89 @@
-type User {
-  userId: ID!
-  name: String
-  reviews: [Review] @relation(name: "WROTE", direction: "OUT")
-  avgStars: Float
-    @cypher(
-      statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.stars))"
-    )
-  numReviews: Int
-    @cypher(statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN COUNT(r)")
-  recommendations(first: Int = 3): [Business]
-    @cypher(
-      statement: "MATCH (this)-[:WROTE]->(r:Review)-[:REVIEWS]->(:Business)<-[:REVIEWS]-(:Review)<-[:WROTE]-(:User)-[:WROTE]->(:Review)-[:REVIEWS]->(rec:Business) WHERE NOT EXISTS( (this)-[:WROTE]->(:Review)-[:REVIEWS]->(rec) ) WITH rec, COUNT(*) AS num ORDER BY num DESC LIMIT $first RETURN rec"
-    )
-}
-
-type Business {
-  businessId: ID!
-  name: String!
-  address: String
-  city: String
-  state: String
-  location: Point
-  avgStars: Float
-    @cypher(
-      statement: "MATCH (this)<-[:REVIEWS]-(r:Review) RETURN coalesce(avg(r.stars),0.0)"
-    )
-  reviews: [Review] @relation(name: "REVIEWS", direction: "IN")
-  categories: [Category] @relation(name: "IN_CATEGORY", direction: "OUT")
-}
-
-type Review {
-  reviewId: ID!
-  stars: Float
-  text: String
+type Mem {
+  memID: ID!
+  mem: String
   date: Date
-  business: Business @relation(name: "REVIEWS", direction: "OUT")
-  user: User @relation(name: "WROTE", direction: "IN")
+  memType: String
+  emoji: String
+  pictures: String
+  personID: [Int]
+  placeID: [Int]
+  person: [Person] @relation(name: "WITH", direction: OUT)
+  place: [Place] @relation(name: "AT", direction: OUT)
+  music: [Music] @relation(name: "LISTENED_TO", direction: OUT)
+  movie: [Movie] @relation(name: "WATCHED", direction: OUT)
+  tvshow: [TVShow] @relation(name: "WATCHED", direction: OUT)
+  game: [Game] @relation(name: "PLAYED", direction: OUT)
 }
 
-type Category {
-  name: ID!
-  businesses: [Business] @relation(name: "IN_CATEGORY", direction: "IN")
+type Person {
+  personID: ID!
+  nickname: String
+  firstName: String
+  lastName: String
+  mem: [Mem] @relation(name: "WITH", direction: IN)
 }
 
-type RatingCount {
-  stars: Float!
-  count: Int!
+type Place {
+  placeID: ID!
+  place: String
+  city: String
+  postcode: String
+  location: String
+  notes: String
+  mem: [Mem] @relation(name: "AT", direction: IN)
 }
 
-type Mutation {
-  mergeBusinessCategory(categories: [String!]!, businessId: ID!): Business
-    @cypher(
-      statement: "MATCH (b:Business {businessId: $businessId}) UNWIND $categories AS cat MERGE (c:Category {name: cat}) MERGE (b)-[:IN_CATEGORY]->(c) RETURN b"
-    )
+type Music {
+  musicID: ID!
+  album: String
+  Artist: String
+  releaseDate: Date
+  genre: String
+  style: String
+  albumArt: String
+  wikipediaPage: String
+  mem: [Mem] @relation(name: "LISTENED_TO", direction: IN)
+}
+
+type Movie {
+  movieID: ID!
+  movie: String
+  releaseDate: String
+  synopsis: String
+  director: String
+  imdbRating: Float
+  poster: String
+  mem: [Mem] @relation(name: "WATCHED", direction: IN)
+}
+
+type TVShow {
+  tvshowID: ID!
+  tvshow: String
+  releaseDate: Date
+  creator: String
+  synopsis: String
+  poster: String
+  wikipediaPage: String
+  mem: [Mem] @relation(name: "WATCHED", direction: IN)
+}
+
+type Game {
+  gameID: ID!
+  game: String
+  releaseDate: Date
+  developer: String
+  description: String
+  boxArt: String
+  wikipediaPage: String
+  mem: [Mem] @relation(name: "PLAYED", direction: IN)
 }
 
 type Query {
-  userCount: Int! @cypher(statement: "MATCH (u:User) RETURN COUNT(u)")
-  ratingsCount: [RatingCount]
-    @cypher(
-      statement: "MATCH (r:Review) WITH r.stars AS stars, COUNT(*) AS count ORDER BY stars RETURN {stars: stars, count: count}"
-    )
+  memCount: Int! @cypher(statement: "MATCH (m:Mem) RETURN COUNT(m)")
+  peopleCount: Int! @cypher(statement: "MATCH (m:Person) RETURN COUNT(m)")
+  placeCount: Int! @cypher(statement: "MATCH (m:Place) RETURN COUNT(m)")
+  musicCount: Int! @cypher(statement: "MATCH (m:Music) RETURN COUNT(m)")
+  movieCount: Int! @cypher(statement: "MATCH (m:Movie) RETURN COUNT(m)")
+  tvshowCount: Int! @cypher(statement: "MATCH (m:TVShow) RETURN COUNT(m)")
+  gameCount: Int! @cypher(statement: "MATCH (m:Game) RETURN COUNT(m)")
 }

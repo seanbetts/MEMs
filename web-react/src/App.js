@@ -1,8 +1,21 @@
 import React from 'react'
 
-import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
+import { Switch, Route, Router } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
 
-import UserList from './components/UserList'
+import Home from './components/Home'
+import UserAccount from './components/UserAccount/UserAccount'
+import MemsLine from './components/UserAccount/MemsLine'
+import MemsGrid from './components/UserAccount/MemsGrid'
+import MemsList from './components/UserAccount/MemsList'
+import Mems from './components/UserAccount/Mems'
+import PeopleGrid from './components/UserAccount/PeopleGrid'
+// import PlaceList from './components/UserAccount/MemsList'
+// import EventList from './components/UserAccount/MemsList'
+// import MusicList from './components/UserAccount/MemsList'
+// import MovieList from './components/UserAccount/MemsList'
+// import TVShowList from './components/UserAccount/MemsList'
+// import GameList from './components/UserAccount/MemsList'
 
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
@@ -24,19 +37,27 @@ import {
 } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import {
-  ChevronLeft as ChevronLeftIcon,
+  ArrowBackIos as ArrowBackIcon,
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
+  History as MemsIcon,
   People as PeopleIcon,
+  Place as PlaceIcon,
+  Cake as EventIcon,
+  LibraryMusic as MusicIcon,
+  Tv as TVIcon,
+  LocalMovies as MovieIcon,
+  SportsEsports as GameIcon,
+  Timeline as TimelineIcon,
 } from '@material-ui/icons'
-import Dashboard from './components/Dashboard'
+
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <MUILink color="inherit" href="https://grandstack.io/">
-        Your GRANDstack App Name Here
+      <MUILink color="inherit" href="https://www.seanbetts.com/">
+        MEMs
       </MUILink>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -44,7 +65,9 @@ function Copyright() {
   )
 }
 
-const drawerWidth = 240
+const history = createBrowserHistory();
+
+const drawerWidth = 200
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,6 +110,8 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
+    backgroundColor: 'black',
+    color: 'white',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -99,6 +124,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    paddingLeft: '8px',
     width: theme.spacing(7),
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9),
@@ -129,13 +155,14 @@ const useStyles = makeStyles((theme) => ({
   },
   appBarImage: {
     maxHeight: '75px',
+    marginLeft: '-40px',
     paddingRight: '20px',
   },
 }))
 
 export default function App() {
   const classes = useStyles()
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = React.useState(false)
   const handleDrawerOpen = () => {
     setOpen(true)
   }
@@ -144,10 +171,10 @@ export default function App() {
   }
 
   return (
-    <Router>
+    <Router history={history}>
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar
+        <AppBar style={{ background: '#000000' }}
           position="absolute"
           className={clsx(classes.appBar, open && classes.appBarShift)}
         >
@@ -164,20 +191,13 @@ export default function App() {
             >
               <MenuIcon />
             </IconButton>
-            <img
-              className={classes.appBarImage}
-              src="img/grandstack.png"
-              alt="GRANDstack logo"
-            />
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
-              Welcome To GRANDstack App
-            </Typography>
+            <Link to="/" className={classes.navLink}>
+              <img
+                className={classes.appBarImage}
+                src="img/mems-logo.png"
+                alt="mems logo"
+              />
+            </Link>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -189,26 +209,100 @@ export default function App() {
         >
           <div className={classes.toolbarIcon}>
             <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon />
+              <ArrowBackIcon style={{ color: 'white' }} />
             </IconButton>
           </div>
+
           <Divider />
           <List>
-            <Link to="/" className={classes.navLink}>
+
+            <Link to="/dashboard" className={classes.navLink}>
               <ListItem button>
                 <ListItemIcon>
-                  <DashboardIcon />
+                  <DashboardIcon style={{ color: 'white' }} />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItem>
             </Link>
 
-            <Link to="/users" className={classes.navLink}>
+            <Link to="/memsline" className={classes.navLink}>
               <ListItem button>
                 <ListItemIcon>
-                  <PeopleIcon />
+                  <TimelineIcon style={{ color: 'white' }} />
                 </ListItemIcon>
-                <ListItemText primary="Users" />
+                <ListItemText primary="MemsLine" />
+              </ListItem>
+            </Link>
+
+            <Link to="/memsgrid" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <MemsIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="MEMs" />
+              </ListItem>
+            </Link>
+
+            <Link to="/events" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <EventIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="Events" />
+              </ListItem>
+            </Link>
+
+            <Link to="/people" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <PeopleIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="People" />
+              </ListItem>
+            </Link>
+
+            <Link to="/places" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <PlaceIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="Places" />
+              </ListItem>
+            </Link>
+
+            <Link to="/music" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <MusicIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="Music" />
+              </ListItem>
+            </Link>
+
+            <Link to="/movies" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <MovieIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="Movies" />
+              </ListItem>
+            </Link>
+
+            <Link to="/tvshows" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <TVIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="TV Shows" />
+              </ListItem>
+            </Link>
+
+            <Link to="/games" className={classes.navLink}>
+              <ListItem button>
+                <ListItemIcon>
+                  <GameIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+                <ListItemText primary="Games" />
               </ListItem>
             </Link>
           </List>
@@ -218,9 +312,19 @@ export default function App() {
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
             <Switch>
-              <Route exact path="/" component={Dashboard} />
-              <Route exact path="/businesses" component={UserList} />
-              <Route exact path="/users" component={UserList} />
+              <Route exact path="/" component={Home} />
+              <Route exact path="/useraccount" component={UserAccount} />
+              <Route exact path="/memsline" component={MemsLine} />
+              <Route exact path="/memslist" component={MemsList} />
+              <Route exact path="/memsgrid" component={MemsGrid} />
+              {/* <Route exact path="/mems/:memID" component={Mems} /> */}
+              <Route exact path="/people" component={PeopleGrid} />
+              {/* <Route exact path="/places" component={PlaceList} />
+              <Route exact path="/events" component={EventList} />
+              <Route exact path="/music" component={MusicList} />
+              <Route exact path="/movies" component={MovieList} />
+              <Route exact path="/tvshows" component={TVShowList} />
+              <Route exact path="/games" component={GameList} /> */}
             </Switch>
 
             <Box pt={4}>
@@ -229,6 +333,6 @@ export default function App() {
           </Container>
         </main>
       </div>
-    </Router>
+    </Router >
   )
 }
