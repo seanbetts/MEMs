@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4),
     },
     logo: {
-        maxHeight: '18vw',
+        maxHeight: '16vw',
         marginTop: '-3vw',
         marginLeft: 'auto',
         marginRight: 'auto',
