@@ -92,7 +92,7 @@ const useStyles = makeStyles(Theme => ({
     },
     cardMedia: {
         margin: 'auto',
-        marginTop: '0px',
+        marginTop: '-30px',
     },
     cardContent: {
         marginTop: '-136px',
@@ -113,7 +113,7 @@ const useStyles = makeStyles(Theme => ({
     details: {
         margin: '0px',
         textAlign: 'left',
-        fontSize: '0.6vw',
+        fontSize: '10px',
         "& p": {
             margin: '0px',
         },
@@ -237,7 +237,7 @@ const MemsGrid = (props, i) => {
                             action={
                                 <span className={classes.emoji}>{memID.emoji}</span>
                             }
-                            title={<span style={{ fontSize: '0.6vw', fontWeight: '550' }}>{memID.mem}</span>}
+                            title={<span style={{ fontSize: '0.5vw', fontWeight: '550' }}>{memID.mem}</span>}
                             subheader={<span style={{ fontSize: '0.4vw' }}>{memID.date.day}-{memID.date.month}-{memID.date.year}</span>}
                         />
                     </ThemeProvider>
