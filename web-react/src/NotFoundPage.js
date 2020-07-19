@@ -46,6 +46,15 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '0px',
     paddingRight: '20px',
   },
+  elephant: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: '20px',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }))
 
 export default function NotFoundPage() {
@@ -69,6 +78,11 @@ export default function NotFoundPage() {
       </AppBar>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
+        <img
+          className={classes.elephant}
+          src='https://storage.googleapis.com/mems-images/elephant.png'
+          alt='Elephant'
+        />
         <h2 style={{ textAlign: "center" }}>Uh Oh....</h2>
         <p style={{ textAlign: "center" }}>It seems like we've forgotten something</p>
         <p style={{ textAlign: "center" }}><Link to="/">Go Home </Link></p>
