@@ -7,6 +7,8 @@ type Mem {
   pictures: String
   personID: [Int]
   placeID: [Int]
+  favourite: Boolean
+  public: Boolean
   person: [Person] @relation(name: "WITH", direction: OUT)
   place: [Place] @relation(name: "AT", direction: OUT)
   music: [Music] @relation(name: "LISTENED_TO", direction: OUT)
@@ -20,6 +22,8 @@ type Person {
   nickname: String
   firstName: String
   lastName: String
+  favourite: Boolean
+  public: Boolean
   mem: [Mem] @relation(name: "WITH", direction: IN)
 }
 
@@ -30,6 +34,8 @@ type Place {
   postcode: String
   location: String
   notes: String
+  favourite: Boolean
+  public: Boolean
   mem: [Mem] @relation(name: "AT", direction: IN)
 }
 
@@ -42,6 +48,8 @@ type Music {
   style: String
   albumArt: String
   wikipediaPage: String
+  favourite: Boolean
+  public: Boolean
   mem: [Mem] @relation(name: "LISTENED_TO", direction: IN)
 }
 
@@ -53,6 +61,8 @@ type Movie {
   director: String
   imdbRating: Float
   poster: String
+  favourite: Boolean
+  public: Boolean
   mem: [Mem] @relation(name: "WATCHED", direction: IN)
 }
 
@@ -64,6 +74,8 @@ type TVShow {
   synopsis: String
   poster: String
   wikipediaPage: String
+  favourite: Boolean
+  public: Boolean
   mem: [Mem] @relation(name: "WATCHED", direction: IN)
 }
 
@@ -75,6 +87,8 @@ type Game {
   description: String
   boxArt: String
   wikipediaPage: String
+  favourite: Boolean
+  public: Boolean
   mem: [Mem] @relation(name: "PLAYED", direction: IN)
 }
 

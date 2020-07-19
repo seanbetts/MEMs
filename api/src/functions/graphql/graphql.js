@@ -23,6 +23,8 @@ const driver = neo4j.driver(
 const server = new ApolloServer({
   schema: makeAugmentedSchema({ typeDefs }),
   context: { driver, neo4jDatabase: process.env.NEO4J_DATABASE },
+  introspection: true,
+  playground: true,
 })
 
 exports.handler = server.createHandler()

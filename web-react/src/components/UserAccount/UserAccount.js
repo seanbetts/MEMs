@@ -1,6 +1,10 @@
 import React from 'react'
 import { Router, Link } from "react-router-dom";
 import { createBrowserHistory } from 'history'
+import { useAuth0 } from "@auth0/auth0-react";
+import LogoutButton from "../Logout-Button";
+import LoginButton from "../Login-Button";
+import { Nav } from "react-bootstrap";
 
 import Auth0ProviderWithHistory from '../../auth0-provider-with-history'
 
@@ -137,6 +141,11 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: '-40px',
         paddingRight: '20px',
     },
+    personIcon: {
+        background: '#000000',
+        display: 'flex',
+        flexDirection: 'row',
+    },
 }))
 
 const UserAccount = () => {
@@ -148,6 +157,16 @@ const UserAccount = () => {
     const handleDrawerClose = () => {
         setOpen(false)
     }
+
+    const AuthNav = () => {
+        const { isAuthenticated } = useAuth0();
+
+        return (
+            <Nav className="justify-content-end">
+                {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+            </Nav>
+        );
+    };
 
     const { show: showSettings, RenderModal: RenderSettingsModal } = useModal()
     const { show: showDashboard, RenderModal: RenderDashboardModal } = useModal()
@@ -192,10 +211,13 @@ const UserAccount = () => {
                             <Link to="/" className={classes.navLink}>
                                 <img
                                     className={classes.appBarImage}
-                                    src="../../img/mems-logo-large.png"
+                                    src='https://storage.googleapis.com/mems-images/mems-logo-small-rounded.png'
                                     alt="mems logo"
                                 />
                             </Link>
+                            <div className={classes.personIcon} style={{ width: '100%', justifyContent: 'flex-end' }}>
+                                <AuthNav />
+                            </div>
                         </Toolbar>
                     </AppBar>
                     <Drawer
