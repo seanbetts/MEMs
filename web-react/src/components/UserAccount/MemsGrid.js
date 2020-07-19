@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
 import {
     CircularProgress,
     Grid,
@@ -29,8 +29,9 @@ import {
 } from '@material-ui/icons'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
+import Theme from '../Theme';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(Theme => ({
     navLink: {
         color: 'black',
         textDecorationColor: 'black',
@@ -84,20 +85,38 @@ const useStyles = makeStyles({
         paddingLeft: '16px',
         paddingRight: '24px',
         paddingBottom: '5px',
+        backgroundColor: 'rgba(255,255,255,0.8)',
     },
     avatar: {
         backgroundColor: 'black',
     },
     cardMedia: {
-        margin: "auto",
+        margin: 'auto',
+        marginTop: '0px',
     },
     cardContent: {
+        marginTop: '-136px',
         textAlign: "left",
-        backgroundColor: '#F5F5F5',
+        backgroundColor: 'rgba(255,255,255,0.8)',
         paddingTop: '10px',
         paddingLeft: '16px',
         paddingRight: '16px',
         paddingBottom: '10px',
+    },
+    cardActions: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: '-60px',
+        paddingLeft: '10px',
+        backgroundColor: 'rgba(255,255,255,0.8)',
+    },
+    details: {
+        margin: '0px',
+        textAlign: 'left',
+        fontSize: '0.6vw',
+        "& p": {
+            margin: '0px',
+        },
     },
     emoji: {
         fontSize: '30px',
@@ -105,7 +124,7 @@ const useStyles = makeStyles({
         lineHeight: '2',
         marginTop: '-100px',
     },
-})
+}))
 
 const GET_MEM = gql`
   {
@@ -170,13 +189,13 @@ const MemsGrid = (props, i) => {
 
     const renderPicture = (memType, memID) => {
         if ((memType === "Music")) {
-            toString(memID.music.map((albumArt) => (albumArt.albumArt)))
+            return ((memID.music.map((albumArt) => (albumArt.albumArt))).toString())
         } else if ((memType === "Movie")) {
-            toString(memID.movie.map((poster) => (poster.poster)))
+            return ((memID.movie.map((poster) => (poster.poster))).toString())
         } else if ((memType === "TVShow")) {
-            toString(memID.tvshow.map((poster) => (poster.poster)))
+            return ((memID.tvshow.map((poster) => (poster.poster))).toString())
         } else if ((memType === "Game")) {
-            toString(memID.game.map((boxArt) => (boxArt.boxArt)))
+            return ((memID.game.map((boxArt) => (boxArt.boxArt))).toString())
         } else if ((memType === "Event")) {
             return require('../../img/historyHead.png')
         }
@@ -196,7 +215,7 @@ const MemsGrid = (props, i) => {
                 })}
                 <span> at</span> {memID.place
                     .map((place, i) => <span key={i}>{place.place}</span>)}</p>
-        } else { return <div><p>&nbsp;</p></div> }
+        } else { }
     }
 
     const { loading, data, error } = useQuery(GET_MEM)
@@ -206,36 +225,36 @@ const MemsGrid = (props, i) => {
     const getMemsCard = (i) => {
         return data.Mem.map((memID, i) => (
             memID.mem.includes(filter) &&
-            < Grid item xs={12} sm={4} lg={4} key={i} >
-                <Card className={classes.card} onClick={() => history.push(`/mems/${memID.memID}`)}>
-                    <CardHeader className={classes.cardHeader}
-                        avatar={
-                            <Avatar aria-label="memory" className={classes.avatar}>
-                                {renderAvatar(memID.memType)}
-                            </Avatar>
-                        }
-                        action={
-                            <span className={classes.emoji}>{memID.emoji}</span>
-                        }
-                        title={<span style={{ fontWeight: '550' }}>{memID.mem}</span>}
-                        subheader={<span>{memID.date.day}-{memID.date.month}-{memID.date.year}</span>}
-                    />
+            < Grid item xs={12} sm={4} lg={3} key={i} >
+                <Card className={classes.card}>
+                    <ThemeProvider theme={Theme}>
+                        <CardHeader className={classes.cardHeader}
+                            avatar={
+                                <Avatar aria-label="memory" className={classes.avatar}>
+                                    {renderAvatar(memID.memType)}
+                                </Avatar>
+                            }
+                            action={
+                                <span className={classes.emoji}>{memID.emoji}</span>
+                            }
+                            title={<span style={{ fontSize: '0.6vw', fontWeight: '550' }}>{memID.mem}</span>}
+                            subheader={<span style={{ fontSize: '0.4vw' }}>{memID.date.day}-{memID.date.month}-{memID.date.year}</span>}
+                        />
+                    </ThemeProvider>
                     <CardMedia
                         className={classes.cardMedia}
                         image={renderPicture(memID.memType, memID)}
-                        style={{ width: "100%", height: "150px" }}
+                        style={{ width: "100%", height: "350px" }}
                     />
-                    <CardContent className={classes.cardContent}>
-                        {renderDetails(memID.memType, memID)}
-                    </CardContent>
-                    <CardActions style={{ justifyContent: 'flex-end' }}>
-                        <IconButton aria-label="add to favorites">
+                    <CardActions className={classes.cardActions} style={{ justifyContent: 'flex-end' }}>
+                        <div className={classes.details}>{renderDetails(memID.memType, memID)}</div>
+                        <IconButton style={{ margin: "0px", padding: "10px", marginLeft: "20px" }} aria-label="add to favorites">
                             <FavoriteIcon />
                         </IconButton>
-                        <IconButton aria-label="make public">
+                        <IconButton style={{ margin: "0px", padding: "10px" }} aria-label="make public">
                             <PublicIcon />
                         </IconButton>
-                        <IconButton aria-label="share">
+                        <IconButton style={{ margin: "0px", padding: "10px" }} aria-label="share">
                             <ShareIcon />
                         </IconButton>
                     </CardActions>
