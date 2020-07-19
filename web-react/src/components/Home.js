@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(4),
     },
     logo: {
-        maxHeight: '150px',
+        maxHeight: '120px',
         marginTop: '-80px',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     },
     strap: {
         position: 'relative',
-        marginTop: '-50px',
+        marginTop: '-45px',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
