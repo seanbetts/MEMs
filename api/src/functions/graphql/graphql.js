@@ -17,6 +17,12 @@ const driver = neo4j.driver(
   ),
   {
     encrypted: process.env.NEO4J_ENCRYPTED ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF',
+    trust: "TRUST_CUSTOM_CA_SIGNED_CERTIFICATES",
+    trustedCertificates: ['../../certificates/neo4j.cert', '../../certificates/cert.pem', '../../certificates/chain.pem', '../../certificates/fullchain.pem', '../../certificates/privkey.pem'],
+    logging: {
+      level: 'debug',
+      logger: (level, message) => console.log(level + ' ' + message)
+    },
   }
 )
 
