@@ -1,5 +1,12 @@
+type User {
+  userID: String
+  firstName: String
+  surname: String
+  email: String
+}
+
 type Mem {
-  memID: ID!
+  memID: ID
   mem: String
   date: Date
   memType: String
@@ -18,7 +25,7 @@ type Mem {
 }
 
 type Person {
-  personID: ID!
+  personID: ID
   nickname: String
   firstName: String
   lastName: String
@@ -28,7 +35,7 @@ type Person {
 }
 
 type Place {
-  placeID: ID!
+  placeID: ID
   place: String
   city: String
   postcode: String
@@ -40,9 +47,9 @@ type Place {
 }
 
 type Music {
-  musicID: ID!
+  musicID: ID
   album: String
-  Artist: String
+  artist: String
   releaseDate: Date
   genre: String
   style: String
@@ -54,7 +61,7 @@ type Music {
 }
 
 type Movie {
-  movieID: ID!
+  movieID: ID
   movie: String
   releaseDate: String
   synopsis: String
@@ -67,7 +74,7 @@ type Movie {
 }
 
 type TVShow {
-  tvshowID: ID!
+  tvshowID: ID
   tvshow: String
   releaseDate: Date
   creator: String
@@ -80,7 +87,7 @@ type TVShow {
 }
 
 type Game {
-  gameID: ID!
+  gameID: ID
   game: String
   releaseDate: Date
   developer: String
