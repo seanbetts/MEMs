@@ -1,16 +1,16 @@
 import React from 'react'
-import { Typography, Link as MUILink, } from '@material-ui/core'
+import { Link as MUILink, } from '@material-ui/core'
 
 function Copyright() {
     return (
-        <Typography variant="body2" color="textSecondary" align="center">
+        <div style={{ width: "100%", color: "black", fontSize: "13px", textAlign: "center" }} >
             {'Copyright © '}
-            <MUILink color="inherit" href="https://www.seanbetts.com/">
+            <MUILink color="inherit" href="https://www.mems.life/">
                 MEMs
       </MUILink>{' '}
             {new Date().getFullYear()}
             {'.'}
-        </Typography>
+        </div>
     )
 }
 

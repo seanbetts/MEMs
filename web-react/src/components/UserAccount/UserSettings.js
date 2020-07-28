@@ -70,7 +70,7 @@ export default function UserSettings() {
                                 <p><strong>Email Verified: </strong>{email_verified ? 'Yes' : 'No'}</p>
                                 <p><strong>ID: </strong>{sub}</p>
                                 <p></p>
-                                <p>{JSON.stringify(user, null, 2)}</p>
+                                {/* <p>{JSON.stringify(user, null, 2)}</p> */}
                             </Row>
                         </Container>
                     </Paper>

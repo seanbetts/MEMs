@@ -4,20 +4,35 @@ import {
     ListItem,
     ListItemIcon,
 } from '@material-ui/core'
-import {
-    Person as PersonIcon,
-} from '@material-ui/icons'
+
+import { useTheme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 const LogoutButton = () => {
-    const { logout } = useAuth0();
+    const { user, logout } = useAuth0();
+    const { picture } = user;
+
+    const theme = useTheme()
+
+    const useStyles = makeStyles((theme) => ({
+        profileImage: {
+            borderRadius: '50%',
+            maxWidth: '50px',
+            marginLeft: '30px',
+            marginRight: '30px',
+        },
+    }))
+
+    const classes = useStyles(theme)
+
     return (
         <ListItem button>
             <ListItemIcon>
-                <PersonIcon
-                    style={{ color: 'green', fontSize: '3em' }}
+                <img
+                    src={picture}
+                    alt="Profile"
+                    className={classes.profileImage}
                     onClick={() => logout({ returnTo: window.location.origin, })}
-                    variant="danger"
-                    className="btn-margin"
                 />
             </ListItemIcon>
         </ListItem>

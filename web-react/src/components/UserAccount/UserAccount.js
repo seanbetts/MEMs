@@ -1,40 +1,29 @@
-import React from 'react'
-import { Router, Link } from "react-router-dom";
-import { createBrowserHistory } from 'history'
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Logout-Button";
 import LoginButton from "../Login-Button";
 import { Nav } from "react-bootstrap";
+import Modal from "react-modal";
 
 import Auth0ProviderWithHistory from '../../auth0-provider-with-history'
 
-import { useModal } from '../UseModal'
-import Can from "../../components/Can";
 import UserSettings from "./UserSettings";
 import Dashboard from "./Dashboard/Dashboard";
 import MEMsLine from "./MemsLine";
 import MEMsGrid from "./MemsGrid";
 import Copyright from "../Copyright";
 
-import clsx from 'clsx'
-import { makeStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 import {
-    CssBaseline,
-    Drawer,
     Box,
-    AppBar,
-    Toolbar,
     List,
     Divider,
-    IconButton,
     Container,
     ListItem,
-    ListItemText,
     ListItemIcon,
 } from '@material-ui/core'
 import {
-    ArrowBackIos as ArrowBackIcon,
-    Menu as MenuIcon,
     Dashboard as DashboardIcon,
     History as MEMsIcon,
     People as PeopleIcon,
@@ -48,80 +37,57 @@ import {
     Settings as SettingsIcon,
 } from '@material-ui/icons'
 
-const history = createBrowserHistory();
-
-const drawerWidth = 200
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = theme => ({
     root: {
         display: 'flex',
+        flexDirection: 'column',
     },
-    toolbar: {
-        paddingRight: 24, // keep right padding when drawer closed
-    },
-    toolbarIcon: {
+    titleBar: {
         display: 'flex',
+        width: '100%',
         alignItems: 'center',
-        justifyContent: 'flex-end',
-        padding: '0 8px',
-        ...theme.mixins.toolbar,
+        background: '#000000',
+        position: "absolute",
     },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
+    titleBarImage: {
+        marginLeft: '0px',
+        marginTop: '7px',
+        maxHeight: '75px',
+        paddingRight: '20px',
     },
-    appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
+    mainContainer: {
+        display: 'flex',
+        width: '100%',
+        flexDirection: 'row',
     },
-    menuButton: {
-        marginRight: 36,
-    },
-    menuButtonHidden: {
-        display: 'none',
-    },
-    title: {
-        flexGrow: 1,
-    },
-    drawerPaper: {
+    menuBar: {
+        marginTop: '77px',
         position: 'relative',
         whiteSpace: 'nowrap',
         backgroundColor: 'black',
         color: 'white',
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
+        width: '60px',
     },
-    drawerPaperClose: {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        paddingLeft: '8px',
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9),
-        },
-    },
-    appBarSpacer: theme.mixins.toolbar,
     content: {
-        flexGrow: 1,
-        height: '100vh',
-        overflow: 'auto',
+        display: 'flex',
+        flexWrap: 'nowrap',
+        flexGrow: 5,
+        marginTop: '90px',
+        height: '92vh',
+        padding: '10px',
+    },
+    modal: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+        justifyContent: 'flex-end',
+        height: '91vh',
     },
     paper: {
         padding: theme.spacing(2),
@@ -129,88 +95,322 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
         flexDirection: 'column',
     },
-    fixedHeight: {
-        height: 240,
-    },
     navLink: {
         textDecoration: 'none',
         color: 'inherit',
-    },
-    appBarImage: {
-        maxHeight: '75px',
-        marginLeft: '-40px',
-        paddingRight: '20px',
     },
     personIcon: {
         background: '#000000',
         display: 'flex',
         flexDirection: 'row',
     },
-}))
+})
 
-const UserAccount = () => {
-    const classes = useStyles()
-    const [open, setOpen] = React.useState(false)
-    const handleDrawerOpen = () => {
-        setOpen(true)
-    }
-    const handleDrawerClose = () => {
-        setOpen(false)
-    }
+const ActiveDashboardIcon = ({ data }) =>
+    <div>
+        {data ? data :
+            <ListItem button id="dashboardIcon" style={{ backgroundColor: 'black' }}>
+                <ListItemIcon>
+                    <DashboardIcon style={{ color: 'white' }} />
+                </ListItemIcon>
+            </ListItem>
+        }
+    </div>;
 
-    const AuthNav = () => {
-        const { isAuthenticated } = useAuth0();
-
-        return (
-            <Nav className="justify-content-end">
-                {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-            </Nav>
-        );
+class UserAccount extends Component {
+    state = {
+        dashboardOpened: true,
+        memslineOpened: false,
+        memsOpened: false,
+        eventsOpened: false,
+        peopleOpened: false,
+        placesOpened: false,
+        musicOpened: false,
+        moviesOpened: false,
+        tvshowsOpened: false,
+        gamesOpened: false,
+        settingsOpened: false
     };
 
-    const { show: showSettings, RenderModal: RenderSettingsModal } = useModal()
-    const { show: showDashboard, RenderModal: RenderDashboardModal } = useModal()
-    const { show: showMEMsLine, RenderModal: RenderMEMsLineModal } = useModal()
-    const { show: showMEMsGrid, RenderModal: RenderMEMsGridModal } = useModal()
-    const { show: showEvents, RenderModal: RenderEventsModal } = useModal()
-    const { show: showPeople, RenderModal: RenderPeopleModal } = useModal()
-    const { show: showPlaces, RenderModal: RenderPlacesModal } = useModal()
-    const { show: showMusic, RenderModal: RenderMusicModal } = useModal()
-    const { show: showMovies, RenderModal: RenderMoviesModal } = useModal()
-    const { show: showTVShows, RenderModal: RenderTVShowsModal } = useModal()
-    const { show: showGames, RenderModal: RenderGamesModal } = useModal()
+    openModal = modalType => () => {
+        if (modalType === "dashboard") {
+            this.setState({
+                dashboardOpened: true,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "memsline") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: true,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "mems") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: true,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "events") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: true,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "people") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: true,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "places") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: true,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "music") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: true,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "movies") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: true,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "tvshows") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: true,
+                gamesOpened: false,
+                settingsOpened: false
+            });
+        } else if (modalType === "games") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: true,
+                settingsOpened: false
+            });
+        } else if (modalType === "settings") {
+            this.setState({
+                dashboardOpened: false,
+                memslineOpened: false,
+                memsOpened: false,
+                eventsOpened: false,
+                peopleOpened: false,
+                placesOpened: false,
+                musicOpened: false,
+                moviesOpened: false,
+                tvshowsOpened: false,
+                gamesOpened: false,
+                settingsOpened: true
+            });
+        }
+    };
 
-    return (
-        // <AuthConsumer>
-        //   {({ user }) => (
-        //     <Can
-        //       role={user.role}
-        //       perform="useraccount:visit"
-        //       yes={() => (
-        <Router history={history}>
-            <Auth0ProviderWithHistory>
-                <div className={classes.root}>
-                    <CssBaseline />
-                    <AppBar style={{ background: '#000000' }}
-                        position="absolute"
-                        className={clsx(classes.appBar, open && classes.appBarShift)}
-                    >
-                        <Toolbar className={classes.toolbar}>
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={handleDrawerOpen}
-                                className={clsx(
-                                    classes.menuButton,
-                                    open && classes.menuButtonHidden
-                                )}
-                            >
-                                <MenuIcon />
-                            </IconButton>
+    closeModal = modalType => () => {
+        if (modalType === "dashboard") {
+            this.setState({
+                dashboardOpened: false
+            });
+        } else if (modalType === "memsline") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "mems") {
+            this.setState({
+                memslineOpened: false
+            });
+        }
+        else if (modalType === "events") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "people") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "places") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "music") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "movies") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "tvshows") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "games") {
+            this.setState({
+                memslineOpened: false
+            });
+        } else if (modalType === "settings") {
+            this.setState({
+                memslineOpened: false
+            });
+        }
+    };
+
+    componentDidMount() {
+        this.setState({
+            data:
+                <ListItem button id="dashboardIcon" style={{ backgroundColor: 'white' }}>
+                    <ListItemIcon>
+                        <DashboardIcon style={{ color: 'black' }} />
+                    </ListItemIcon>
+                </ListItem>
+        })
+    }
+
+    componentWillUnmount() {
+        this.setState({
+            data:
+                <ListItem button id="dashboardIcon" style={{ backgroundColor: 'black' }}>
+                    <ListItemIcon>
+                        <DashboardIcon style={{ color: 'white' }} />
+                    </ListItemIcon>
+                </ListItem>
+        })
+    }
+
+    render() {
+        const { dashboardOpened, memslineOpened, memsOpened, eventsOpened, peopleOpened, placesOpened, musicOpened, moviesOpened, tvshowsOpened, gamesOpened, settingsOpened } = this.state;
+        const { classes } = this.props
+
+        const AuthNav = () => {
+            const { isAuthenticated } = useAuth0();
+
+            return (
+                <Nav className="justify-content-end">
+                    {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+                </Nav>
+            );
+        };
+
+        const modalStyle = {
+            overlay: {
+                position: 'absolute',
+                top: '95px',
+                bottom: '70px',
+                left: '50%',
+                marginLeft: '35px',
+                marginRight: 'auto',
+                transform: 'translate(-50%, -0%)',
+                backgroundColor: 'rgba(255, 255, 255, 0)',
+                maxWidth: '1500px',
+                border: 'none',
+            },
+            content: {
+                position: 'absolute',
+                top: '0px',
+                left: '0px',
+                right: '0px',
+                bottom: '0px',
+                background: '#fff',
+                overflow: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                padding: '10px',
+                maxWidth: '1200px',
+                border: 'none',
+            }
+        };
+
+        return (
+            <>
+                <Auth0ProviderWithHistory>
+                    <div className={classes.root}>
+                        <div className={classes.titleBar}>
                             <Link to="/" className={classes.navLink}>
                                 <img
-                                    className={classes.appBarImage}
+                                    className={classes.titleBarImage}
                                     src='https://storage.googleapis.com/mems-images/mems-logo-small-rounded.png'
                                     alt="mems logo"
                                 />
@@ -218,153 +418,223 @@ const UserAccount = () => {
                             <div className={classes.personIcon} style={{ width: '100%', justifyContent: 'flex-end' }}>
                                 <AuthNav />
                             </div>
-                        </Toolbar>
-                    </AppBar>
-                    <Drawer
-                        variant="permanent"
-                        classes={{
-                            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                        }}
-                        open={open}
-                    >
-                        <div className={classes.toolbarIcon}>
-                            <IconButton onClick={handleDrawerClose}>
-                                <ArrowBackIcon style={{ color: 'white' }} />
-                            </IconButton>
                         </div>
 
-                        <Divider />
-                        <List>
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <SettingsIcon onClick={showSettings} style={{ color: 'white' }} />
-                                    <RenderSettingsModal>
-                                        <UserSettings />
-                                    </RenderSettingsModal>
-                                </ListItemIcon>
-                                <ListItemText primary="Settings" />
-                            </ListItem>
+                        <div className={classes.mainContainer}>
+                            <List className={classes.menuBar}>
+                                <div>
+                                    <ActiveDashboardIcon data={this.state.data} onClick={this.openModal("dashboard")} />
+                                </div>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <DashboardIcon onClick={showDashboard} style={{ color: 'white' }} />
-                                    <RenderDashboardModal>
-                                        <Dashboard />
-                                    </RenderDashboardModal>
-                                </ListItemIcon>
-                                <ListItemText primary="Dashboard" />
-                            </ListItem>
+                                <ListItem button id="memslineIcon" style={{ backgroundColor: 'black' }}>
+                                    <ListItemIcon>
+                                        <MEMslineIcon onClick={this.openModal("memsline")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <MEMslineIcon onClick={showMEMsLine} style={{ color: 'white' }} />
-                                    <RenderMEMsLineModal>
-                                        <MEMsLine />
-                                    </RenderMEMsLineModal>
-                                </ListItemIcon>
-                                <ListItemText primary="MEMsLine" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <MEMsIcon onClick={this.openModal("mems")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <MEMsIcon onClick={showMEMsGrid} style={{ color: 'white' }} />
-                                    <RenderMEMsGridModal>
-                                        <MEMsGrid />
-                                    </RenderMEMsGridModal>
-                                </ListItemIcon>
-                                <ListItemText primary="All MEMs" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <EventIcon onClick={this.openModal("events")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <EventIcon onClick={showEvents} style={{ color: 'white' }} />
-                                    <RenderEventsModal>
-                                        <p>Events</p>
-                                    </RenderEventsModal>
-                                </ListItemIcon>
-                                <ListItemText primary="Events" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <PeopleIcon onClick={this.openModal("people")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <PeopleIcon onClick={showPeople} style={{ color: 'white' }} />
-                                    <RenderPeopleModal>
-                                        <p>People</p>
-                                    </RenderPeopleModal>
-                                </ListItemIcon>
-                                <ListItemText primary="People" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <PlaceIcon onClick={this.openModal("places")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <PlaceIcon onClick={showPlaces} style={{ color: 'white' }} />
-                                    <RenderPlacesModal>
-                                        <p>Places</p>
-                                    </RenderPlacesModal>
-                                </ListItemIcon>
-                                <ListItemText primary="Places" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <MusicIcon onClick={this.openModal("music")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <MusicIcon onClick={showMusic} style={{ color: 'white' }} />
-                                    <RenderMusicModal>
-                                        <p>Music</p>
-                                    </RenderMusicModal>
-                                </ListItemIcon>
-                                <ListItemText primary="Music" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <MovieIcon onClick={this.openModal("movies")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <MovieIcon onClick={showMovies} style={{ color: 'white' }} />
-                                    <RenderMoviesModal>
-                                        <p>Movies</p>
-                                    </RenderMoviesModal>
-                                </ListItemIcon>
-                                <ListItemText primary="Movies" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <TVIcon onClick={this.openModal("tvshows")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <TVIcon onClick={showTVShows} style={{ color: 'white' }} />
-                                    <RenderTVShowsModal>
-                                        <p>TV Shows</p>
-                                    </RenderTVShowsModal>
-                                </ListItemIcon>
-                                <ListItemText primary="TV Shows" />
-                            </ListItem>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <GameIcon onClick={this.openModal("games")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
 
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <GameIcon onClick={showGames} style={{ color: 'white' }} />
-                                    <RenderGamesModal>
-                                        <p>Games</p>
-                                    </RenderGamesModal>
-                                </ListItemIcon>
-                                <ListItemText primary="Games" />
-                            </ListItem>
-                        </List>
-                        <Divider />
-                    </Drawer>
-                    <main className={classes.content}>
-                        <div className={classes.appBarSpacer} />
-                        <Container maxWidth="lg" className={classes.container}>
-                            <div id='modal-root' />
-                            <Box pt={4}>
-                                <Copyright />
-                            </Box>
-                        </Container>
-                    </main>
-                </div>
-            </Auth0ProviderWithHistory>
-        </Router >
-        //       )}
-        //       no={() => <Redirect to="/" />}
-        //     />
-        //   )}
-        // </AuthConsumer>
-    )
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <SettingsIcon onClick={this.openModal("settings")} style={{ color: 'white' }} />
+                                    </ListItemIcon>
+                                </ListItem>
+
+                            </List>
+                            <Divider />
+                            <div id="content" className={classes.content}>
+                                <div id="modal" className={classes.modal}></div>
+                                <Container maxWidth="lg" className={classes.container}>
+                                    <Box pt={4}>
+                                        <Copyright />
+                                    </Box>
+                                </Container>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Modal
+                        isOpen={dashboardOpened}
+                        onRequestClose={this.closeModal("dashboard")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"dashboard"}
+                    >
+                        <Dashboard />
+                    </Modal>
+
+                    <Modal
+                        isOpen={memslineOpened}
+                        onRequestClose={this.closeModal("memsline")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"memsline"}
+                    >
+                        <MEMsLine />
+                    </Modal>
+
+                    <Modal
+                        isOpen={memsOpened}
+                        onRequestClose={this.closeModal("mems")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"mems"}
+                    >
+                        <MEMsGrid />
+                    </Modal>
+
+                    <Modal
+                        isOpen={eventsOpened}
+                        onRequestClose={this.closeModal("events")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"events"}
+                    >
+                        <h2>Events</h2>
+                    </Modal>
+
+                    <Modal
+                        isOpen={peopleOpened}
+                        onRequestClose={this.closeModal("people")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"people"}
+                    >
+                        <h2>People</h2>
+                    </Modal>
+
+                    <Modal
+                        isOpen={placesOpened}
+                        onRequestClose={this.closeModal("places")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"places"}
+                    >
+                        <h2>Places</h2>
+                    </Modal>
+
+                    <Modal
+                        isOpen={musicOpened}
+                        onRequestClose={this.closeModal("music")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"music"}
+                    >
+                        <h2>Music</h2>
+                    </Modal>
+
+                    <Modal
+                        isOpen={moviesOpened}
+                        onRequestClose={this.closeModal("movies")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"movies"}
+                    >
+                        <h2>Movies</h2>
+                    </Modal>
+
+                    <Modal
+                        isOpen={tvshowsOpened}
+                        onRequestClose={this.closeModal("tvshows")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"tv shows"}
+                    >
+                        <h2>TV Shows</h2>
+                    </Modal>
+
+                    <Modal
+                        isOpen={gamesOpened}
+                        onRequestClose={this.closeModal("games")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"games"}
+                    >
+                        <h2>Games</h2>
+                    </Modal>
+
+                    <Modal
+                        isOpen={settingsOpened}
+                        onRequestClose={this.closeModal("settings")}
+                        parentSelector={() => document.querySelector('#modal')}
+                        shouldFocusAfterRender={false}
+                        style={modalStyle}
+                        ariaHideApp={false}
+                        contentLabel={"settings"}
+                    >
+                        <UserSettings />
+                    </Modal>
+
+                </Auth0ProviderWithHistory>
+            </>
+        )
+    }
 }
 
-export default UserAccount
+export default withStyles(useStyles)(UserAccount)
