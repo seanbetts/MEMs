@@ -8,9 +8,7 @@ import {
   Box,
   AppBar,
   Toolbar,
-  Typography,
   Container,
-  Link as MUILink,
 } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
