@@ -18,6 +18,7 @@ const LogoutButton = () => {
         profileImage: {
             borderRadius: '50%',
             maxWidth: '50px',
+            maxHeight: '50px',
             marginLeft: '30px',
             marginRight: '30px',
         },
