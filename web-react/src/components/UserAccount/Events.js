@@ -141,7 +141,7 @@ const useStyles = makeStyles(() => ({
 
 const GET_MEM = gql`
   {
-    Mem(orderBy: date_asc) {
+    Mem(memType: "Event", orderBy: date_asc) {
       memID
       mem
       date {
@@ -178,7 +178,7 @@ const GET_MEM = gql`
   }
 `
 
-const MemsGrid = () => {
+const Events = () => {
 
     const classes = useStyles();
     // const [anchorEl, setAnchorEl] = React.useState(null);
@@ -274,7 +274,7 @@ const MemsGrid = () => {
     // }
 
     const { loading, data, error } = useQuery(GET_MEM)
-    if (loading) return <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Loading...</p></div>
+    if (loading) return <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Remembering...</p></div>
     if (error) return <p style={{ textAlign: "center" }} >Error</p>
 
     const getMemsCard = () => {
@@ -304,7 +304,7 @@ const MemsGrid = () => {
                                 style={{ width: "100%" }}
                             />
                         ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Loading...</p></div>
+                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Remembering...</p></div>
                             )}
                     </>
                     <CardActions className={classes.cardActions} style={{ justifyContent: 'flex-end' }}>
@@ -328,7 +328,7 @@ const MemsGrid = () => {
                     <TextField
                         className={classes.searchInput}
                         onChange={handleSearchChange}
-                        label="MEMs search"
+                        label="Events search"
                         variant="standard"
                     />
                 </Box>
@@ -360,4 +360,4 @@ const MemsGrid = () => {
     );
 };
 
-export default MemsGrid;
+export default Events
