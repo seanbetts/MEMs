@@ -1,6 +1,8 @@
 import React from 'react'
 import { Nav } from "react-bootstrap";
 
+import UserAccount from './UserAccount/UserAccount'
+
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "./Logout-Button";
 import LoginButton from "./Login-Button";

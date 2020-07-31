@@ -12,6 +12,13 @@ import UserSettings from "./UserSettings";
 import Dashboard from "./Dashboard/Dashboard";
 import MEMsLine from "./MemsLine";
 import MEMsGrid from "./MemsGrid";
+import Events from "./Events";
+import People from "./People";
+import Places from "./Places";
+import Music from "./Music";
+import Movies from "./Movies";
+import TVShows from "./TVShows";
+import Games from "./Games";
 import Copyright from "../Copyright";
 
 import { withStyles } from '@material-ui/core/styles'
@@ -33,7 +40,7 @@ import {
     Tv as TVIcon,
     LocalMovies as MovieIcon,
     SportsEsports as GameIcon,
-    Timeline as MEMslineIcon,
+    Timeline as MEMsLineIcon,
     Settings as SettingsIcon,
 } from '@material-ui/icons'
 
@@ -106,263 +113,85 @@ const useStyles = theme => ({
     },
 })
 
-const ActiveDashboardIcon = ({ data }) =>
-    <div>
-        {data ? data :
-            <ListItem button id="dashboardIcon" style={{ backgroundColor: 'black' }}>
-                <ListItemIcon>
-                    <DashboardIcon style={{ color: 'white' }} />
-                </ListItemIcon>
-            </ListItem>
-        }
-    </div>;
+const activeModal = [
+    { modalName: 'dashboard', modal: Dashboard, active: true, icon: DashboardIcon, iconColor: 'black', iconBackground: 'white' },
+    { modalName: 'memsline', modal: MEMsLine, active: false, icon: MEMsLineIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'mems', modal: MEMsGrid, active: false, icon: MEMsIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'events', modal: Events, active: false, icon: EventIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'people', modal: People, active: false, icon: PeopleIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'places', modal: Places, active: false, icon: PlaceIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'music', modal: Music, active: false, icon: MusicIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'movies', modal: Movies, active: false, icon: MovieIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'tvshows', modal: TVShows, active: false, icon: TVIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'games', modal: Games, active: false, icon: GameIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'settings', modal: UserSettings, active: false, icon: SettingsIcon, iconColor: 'white', iconBackground: 'black' }
+]
 
 class UserAccount extends Component {
-    state = {
-        dashboardOpened: true,
-        memslineOpened: false,
-        memsOpened: false,
-        eventsOpened: false,
-        peopleOpened: false,
-        placesOpened: false,
-        musicOpened: false,
-        moviesOpened: false,
-        tvshowsOpened: false,
-        gamesOpened: false,
-        settingsOpened: false
-    };
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeModal,
+        };
+    }
+
+    // UPDATE - set specific modal active property to TRUE, iconColor to 'black' and iconBackground to 'white'
     openModal = modalType => () => {
-        if (modalType === "dashboard") {
-            this.setState({
-                dashboardOpened: true,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
+        this.setState(state => {
+            const updatedActiveModal = state.activeModal.map(item => {
+                if (item.active === true) {
+                    return {
+                        modalName: item.modalName,
+                        modal: item.modal,
+                        active: false,
+                        icon: item.icon,
+                        iconColor: 'white',
+                        iconBackground: 'black'
+                    };
+                } else if (item.modalName === modalType) {
+                    return {
+                        modalName: item.modalName,
+                        modal: item.modal,
+                        active: true,
+                        icon: item.icon,
+                        iconColor: 'black',
+                        iconBackground: 'white'
+                    };
+                } else {
+                    return item;
+                }
             });
-        } else if (modalType === "memsline") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: true,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "mems") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: true,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "events") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: true,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "people") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: true,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "places") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: true,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "music") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: true,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "movies") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: true,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "tvshows") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: true,
-                gamesOpened: false,
-                settingsOpened: false
-            });
-        } else if (modalType === "games") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: true,
-                settingsOpened: false
-            });
-        } else if (modalType === "settings") {
-            this.setState({
-                dashboardOpened: false,
-                memslineOpened: false,
-                memsOpened: false,
-                eventsOpened: false,
-                peopleOpened: false,
-                placesOpened: false,
-                musicOpened: false,
-                moviesOpened: false,
-                tvshowsOpened: false,
-                gamesOpened: false,
-                settingsOpened: true
-            });
-        }
+            return {
+                activeModal: updatedActiveModal,
+            };
+        });
     };
 
+    // UPDATE  - set all active properties to FALSE, all iconColors to 'white' and iconBackgrounds to 'black'
     closeModal = modalType => () => {
-        if (modalType === "dashboard") {
-            this.setState({
-                dashboardOpened: false
+        this.setState(state => {
+            const updatedActiveModal = state.activeModal.map(item => {
+                if (item.active === true) {
+                    return {
+                        modalName: item.modalName,
+                        modal: item.modal,
+                        active: false,
+                        icon: item.icon,
+                        iconColor: 'white',
+                        iconBackground: 'black'
+                    };
+                } else {
+                    return item;
+                }
             });
-        } else if (modalType === "memsline") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "mems") {
-            this.setState({
-                memslineOpened: false
-            });
-        }
-        else if (modalType === "events") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "people") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "places") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "music") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "movies") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "tvshows") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "games") {
-            this.setState({
-                memslineOpened: false
-            });
-        } else if (modalType === "settings") {
-            this.setState({
-                memslineOpened: false
-            });
-        }
+            return {
+                activeModal: updatedActiveModal,
+            };
+        });
     };
-
-    componentDidMount() {
-        this.setState({
-            data:
-                <ListItem button id="dashboardIcon" style={{ backgroundColor: 'white' }}>
-                    <ListItemIcon>
-                        <DashboardIcon style={{ color: 'black' }} />
-                    </ListItemIcon>
-                </ListItem>
-        })
-    }
-
-    componentWillUnmount() {
-        this.setState({
-            data:
-                <ListItem button id="dashboardIcon" style={{ backgroundColor: 'black' }}>
-                    <ListItemIcon>
-                        <DashboardIcon style={{ color: 'white' }} />
-                    </ListItemIcon>
-                </ListItem>
-        })
-    }
 
     render() {
-        const { dashboardOpened, memslineOpened, memsOpened, eventsOpened, peopleOpened, placesOpened, musicOpened, moviesOpened, tvshowsOpened, gamesOpened, settingsOpened } = this.state;
         const { classes } = this.props
 
         const AuthNav = () => {
@@ -403,6 +232,30 @@ class UserAccount extends Component {
             }
         };
 
+        const displayModal =
+            this.state.activeModal.filter(item => {
+                return item.active === true
+            });
+
+        const DisplayModalType = displayModal[0].modal
+
+        const displayButtons = this.state.activeModal.map((item, index) => {
+            const DisplayModalType = item.icon;
+            const buttonID = item.modalName;
+            const backgroundColor = item.iconBackground;
+            const iconColor = item.iconColor;
+
+            return (
+                <div key={index}>
+                    <ListItem button id={buttonID} style={{ backgroundColor: backgroundColor }}>
+                        <ListItemIcon>
+                            <DisplayModalType onClick={this.openModal(buttonID)} style={{ color: iconColor }} />
+                        </ListItemIcon>
+                    </ListItem>
+                </div>
+            );
+        });
+
         return (
             <>
                 <Auth0ProviderWithHistory>
@@ -422,70 +275,7 @@ class UserAccount extends Component {
 
                         <div className={classes.mainContainer}>
                             <List className={classes.menuBar}>
-                                <div>
-                                    <ActiveDashboardIcon data={this.state.data} onClick={this.openModal("dashboard")} />
-                                </div>
-
-                                <ListItem button id="memslineIcon" style={{ backgroundColor: 'black' }}>
-                                    <ListItemIcon>
-                                        <MEMslineIcon onClick={this.openModal("memsline")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <MEMsIcon onClick={this.openModal("mems")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <EventIcon onClick={this.openModal("events")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <PeopleIcon onClick={this.openModal("people")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <PlaceIcon onClick={this.openModal("places")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <MusicIcon onClick={this.openModal("music")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <MovieIcon onClick={this.openModal("movies")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <TVIcon onClick={this.openModal("tvshows")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <GameIcon onClick={this.openModal("games")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <SettingsIcon onClick={this.openModal("settings")} style={{ color: 'white' }} />
-                                    </ListItemIcon>
-                                </ListItem>
-
+                                {displayButtons}
                             </List>
                             <Divider />
                             <div id="content" className={classes.content}>
@@ -500,135 +290,15 @@ class UserAccount extends Component {
                     </div>
 
                     <Modal
-                        isOpen={dashboardOpened}
-                        onRequestClose={this.closeModal("dashboard")}
+                        isOpen={true}
+                        onRequestClose={this.closeModal(displayModal[0].modalName)}
                         parentSelector={() => document.querySelector('#modal')}
                         shouldFocusAfterRender={false}
                         style={modalStyle}
                         ariaHideApp={false}
-                        contentLabel={"dashboard"}
+                        contentLabel={displayModal[0].modalName}
                     >
-                        <Dashboard />
-                    </Modal>
-
-                    <Modal
-                        isOpen={memslineOpened}
-                        onRequestClose={this.closeModal("memsline")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"memsline"}
-                    >
-                        <MEMsLine />
-                    </Modal>
-
-                    <Modal
-                        isOpen={memsOpened}
-                        onRequestClose={this.closeModal("mems")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"mems"}
-                    >
-                        <MEMsGrid />
-                    </Modal>
-
-                    <Modal
-                        isOpen={eventsOpened}
-                        onRequestClose={this.closeModal("events")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"events"}
-                    >
-                        <h2>Events</h2>
-                    </Modal>
-
-                    <Modal
-                        isOpen={peopleOpened}
-                        onRequestClose={this.closeModal("people")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"people"}
-                    >
-                        <h2>People</h2>
-                    </Modal>
-
-                    <Modal
-                        isOpen={placesOpened}
-                        onRequestClose={this.closeModal("places")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"places"}
-                    >
-                        <h2>Places</h2>
-                    </Modal>
-
-                    <Modal
-                        isOpen={musicOpened}
-                        onRequestClose={this.closeModal("music")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"music"}
-                    >
-                        <h2>Music</h2>
-                    </Modal>
-
-                    <Modal
-                        isOpen={moviesOpened}
-                        onRequestClose={this.closeModal("movies")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"movies"}
-                    >
-                        <h2>Movies</h2>
-                    </Modal>
-
-                    <Modal
-                        isOpen={tvshowsOpened}
-                        onRequestClose={this.closeModal("tvshows")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"tv shows"}
-                    >
-                        <h2>TV Shows</h2>
-                    </Modal>
-
-                    <Modal
-                        isOpen={gamesOpened}
-                        onRequestClose={this.closeModal("games")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"games"}
-                    >
-                        <h2>Games</h2>
-                    </Modal>
-
-                    <Modal
-                        isOpen={settingsOpened}
-                        onRequestClose={this.closeModal("settings")}
-                        parentSelector={() => document.querySelector('#modal')}
-                        shouldFocusAfterRender={false}
-                        style={modalStyle}
-                        ariaHideApp={false}
-                        contentLabel={"settings"}
-                    >
-                        <UserSettings />
+                        <DisplayModalType />
                     </Modal>
 
                 </Auth0ProviderWithHistory>
