@@ -16,12 +16,22 @@ type Mem {
   placeID: [Int]
   favourite: Boolean
   public: Boolean
+  event: [Event] @relation(name: "WAS_AT", direction: OUT)
   person: [Person] @relation(name: "WITH", direction: OUT)
   place: [Place] @relation(name: "AT", direction: OUT)
   music: [Music] @relation(name: "LISTENED_TO", direction: OUT)
   movie: [Movie] @relation(name: "WATCHED", direction: OUT)
   tvshow: [TVShow] @relation(name: "WATCHED", direction: OUT)
   game: [Game] @relation(name: "PLAYED", direction: OUT)
+}
+
+type Event {
+  eventID: ID
+  name: String
+  date: Date
+  image: String
+  favourite: Boolean
+  public: Boolean
 }
 
 type Person {

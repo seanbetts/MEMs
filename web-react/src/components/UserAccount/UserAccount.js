@@ -5,11 +5,12 @@ import LogoutButton from "../Logout-Button";
 import LoginButton from "../Login-Button";
 import { Nav } from "react-bootstrap";
 import Modal from "react-modal";
+import AddMemModal from '../Modal/Modal'
+import AddMem from '../AddMem'
 
 import Auth0ProviderWithHistory from '../../auth0-provider-with-history'
 
 import UserSettings from "./UserSettings";
-import Dashboard from "./Dashboard/Dashboard";
 import MEMsLine from "./MemsLine";
 import MEMsGrid from "./MemsGrid";
 import Events from "./Events";
@@ -22,6 +23,7 @@ import Games from "./Games";
 import Copyright from "../Copyright";
 
 import { withStyles } from '@material-ui/core/styles'
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import {
     Box,
     List,
@@ -29,9 +31,9 @@ import {
     Container,
     ListItem,
     ListItemIcon,
+    Button,
 } from '@material-ui/core'
 import {
-    Dashboard as DashboardIcon,
     History as MEMsIcon,
     People as PeopleIcon,
     Place as PlaceIcon,
@@ -48,6 +50,7 @@ const useStyles = theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
+        backgroundColor: 'white',
     },
     titleBar: {
         display: 'flex',
@@ -68,12 +71,13 @@ const useStyles = theme => ({
         flexDirection: 'row',
     },
     menuBar: {
-        marginTop: '77px',
+        marginTop: '75px',
         position: 'relative',
         whiteSpace: 'nowrap',
         backgroundColor: 'black',
         color: 'white',
         width: '60px',
+        height: '95vh',
     },
     content: {
         display: 'flex',
@@ -88,6 +92,11 @@ const useStyles = theme => ({
         flexWrap: 'nowrap',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    addModal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     container: {
         display: 'flex',
@@ -106,6 +115,11 @@ const useStyles = theme => ({
         textDecoration: 'none',
         color: 'inherit',
     },
+    addMem: {
+        color: 'white',
+        fontSize: '40px',
+        marginTop: '-10px',
+    },
     personIcon: {
         background: '#000000',
         display: 'flex',
@@ -114,8 +128,7 @@ const useStyles = theme => ({
 })
 
 const activeModal = [
-    { modalName: 'dashboard', modal: Dashboard, active: true, icon: DashboardIcon, iconColor: 'black', iconBackground: 'white' },
-    { modalName: 'memsline', modal: MEMsLine, active: false, icon: MEMsLineIcon, iconColor: 'white', iconBackground: 'black' },
+    { modalName: 'memsline', modal: MEMsLine, active: true, icon: MEMsLineIcon, iconColor: 'black', iconBackground: 'white' },
     { modalName: 'mems', modal: MEMsGrid, active: false, icon: MEMsIcon, iconColor: 'white', iconBackground: 'black' },
     { modalName: 'events', modal: Events, active: false, icon: EventIcon, iconColor: 'white', iconBackground: 'black' },
     { modalName: 'people', modal: People, active: false, icon: PeopleIcon, iconColor: 'white', iconBackground: 'black' },
@@ -133,10 +146,10 @@ class UserAccount extends Component {
         super(props);
         this.state = {
             activeModal,
+            addMemModalToggle: false,
         };
     }
 
-    // UPDATE - set specific modal active property to TRUE, iconColor to 'black' and iconBackground to 'white'
     openModal = modalType => () => {
         this.setState(state => {
             const updatedActiveModal = state.activeModal.map(item => {
@@ -168,7 +181,6 @@ class UserAccount extends Component {
         });
     };
 
-    // UPDATE  - set all active properties to FALSE, all iconColors to 'white' and iconBackgrounds to 'black'
     closeModal = modalType => () => {
         this.setState(state => {
             const updatedActiveModal = state.activeModal.map(item => {
@@ -190,6 +202,13 @@ class UserAccount extends Component {
             };
         });
     };
+
+    addMemModalHandler = (e) => {
+        e.preventDefault();
+        this.setState({
+            addMemModalToggle: !this.state.addMemModalToggle
+        })
+    }
 
     render() {
         const { classes } = this.props
@@ -214,7 +233,8 @@ class UserAccount extends Component {
                 marginRight: 'auto',
                 transform: 'translate(-50%, -0%)',
                 backgroundColor: 'rgba(255, 255, 255, 0)',
-                maxWidth: '1500px',
+                width: '90vw',
+                // maxWidth: '1500px',
                 border: 'none',
             },
             content: {
@@ -227,7 +247,8 @@ class UserAccount extends Component {
                 overflow: 'auto',
                 WebkitOverflowScrolling: 'touch',
                 padding: '10px',
-                maxWidth: '1200px',
+                width: '100%',
+                // maxWidth: '1200px',
                 border: 'none',
             }
         };
@@ -239,14 +260,14 @@ class UserAccount extends Component {
 
         const DisplayModalType = displayModal[0].modal
 
-        const displayButtons = this.state.activeModal.map((item, index) => {
+        const displayButtons = this.state.activeModal.map((item, i) => {
             const DisplayModalType = item.icon;
             const buttonID = item.modalName;
             const backgroundColor = item.iconBackground;
             const iconColor = item.iconColor;
 
             return (
-                <div key={index}>
+                <div key={i}>
                     <ListItem button id={buttonID} style={{ backgroundColor: backgroundColor }}>
                         <ListItemIcon>
                             <DisplayModalType onClick={this.openModal(buttonID)} style={{ color: iconColor }} />
@@ -268,8 +289,16 @@ class UserAccount extends Component {
                                     alt="mems logo"
                                 />
                             </Link>
-                            <div className={classes.personIcon} style={{ width: '100%', justifyContent: 'flex-end' }}>
-                                <AuthNav />
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'flex-end' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Button>
+                                        <AddCircleOutlineIcon className={classes.addMem} onClick={this.addMemModalHandler} />
+                                    </Button>
+                                    <div style={{ marginTop: '-3px', color: 'white', fontSize: '12px', fontWeight: 'bold' }}>Add MEM</div>
+                                </div>
+                                <div className={classes.personIcon} style={{ justifyContent: 'flex-end' }}>
+                                    <AuthNav />
+                                </div>
                             </div>
                         </div>
 
@@ -300,6 +329,10 @@ class UserAccount extends Component {
                     >
                         <DisplayModalType />
                     </Modal>
+
+                    <AddMemModal show={this.state.addMemModalToggle} addMemModalClosed={this.addMemModalHandler}>
+                        <AddMem />
+                    </AddMemModal>
 
                 </Auth0ProviderWithHistory>
             </>
