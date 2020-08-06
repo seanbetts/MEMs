@@ -5,6 +5,9 @@ import neo4j from 'neo4j-driver'
 import { makeAugmentedSchema } from 'neo4j-graphql-js'
 import dotenv from 'dotenv'
 import { initializeDatabase } from './initialize'
+const bodyParser = require('body-parser')
+const multer = require('multer')
+const uploadImage = require('./helpers/helpers')
 
 // set environment variables from .env
 dotenv.config()
@@ -84,6 +87,46 @@ const port = process.env.GRAPHQL_SERVER_PORT || 4001
 const path = process.env.GRAPHQL_SERVER_PATH || '/graphql'
 const host = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
 
+// Code for uploading files to Google Cloud
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.type('multipart/form-data')
+  res.status(500).json({
+    error: err,
+    message: 'Internal server error!',
+  })
+  next()
+})
+
+const multerMid = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    // no larger than 5mb.
+    fileSize: 5 * 1024 * 1024,
+  },
+})
+
+app.disable('x-powered-by')
+app.use(multerMid.single('file'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.post('/uploads', async (req, res, next) => {
+  try {
+    const myFile = req.file
+    const imageUrl = await uploadImage(myFile)
+    res
+      .header('Access-Control-Allow-Origin', 'http://localhost:3000') //origin URLs
+      .status(200)
+      .json({
+        message: 'Upload was successful',
+        data: imageUrl,
+      })
+  } catch (error) {
+    next(error)
+  }
+})
+
 /*
  * Optionally, apply Express middleware for authentication, etc
  * This also also allows us to specify a path for the GraphQL endpoint
@@ -92,4 +135,8 @@ server.applyMiddleware({ app, path })
 
 app.listen({ host, port, path }, () => {
   console.log(`GraphQL server ready at http://${host}:${port}${path}`)
+})
+
+app.listen(9001, () => {
+  console.log('Node.js -> GCP server now listening for requests!')
 })
