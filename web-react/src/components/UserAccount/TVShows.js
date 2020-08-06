@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import Loading from "../Loading";
 import { makeStyles } from '@material-ui/core/styles'
 import {
-    CircularProgress,
     Grid,
     Box,
     Card,
-    Avatar,
     CardMedia,
     CardActions,
     TextField,
@@ -15,11 +14,6 @@ import {
 } from '@material-ui/core'
 import SearchIcon from "@material-ui/icons/Search";
 import {
-    Cake as EventIcon,
-    LibraryMusic as MusicIcon,
-    Tv as TVIcon,
-    LocalMovies as MovieIcon,
-    SportsEsports as GameIcon,
     Public as PublicIcon,
     Apps as AppsIcon,
     List as ListIcon,
@@ -81,10 +75,12 @@ const useStyles = makeStyles(() => ({
 
     },
     card: {
+        width: '263px',
+        minWidth: '263px',
     },
     cardMedia: {
         margin: 'auto',
-        marginTop: '-60px',
+        marginTop: '0px',
         minHeight: '395px',
         zIndex: '-1',
         backgroundSize: 'contain',
@@ -115,11 +111,16 @@ const useStyles = makeStyles(() => ({
         paddingLeft: '5px',
     },
     emoji: {
+        flexGrow: '1',
         fontSize: '30px',
         verticalAlign: 'middle',
-        lineHeight: '2',
+        lineHeight: '1',
         marginTop: '0px',
         marginRight: '7px',
+    },
+    memsDate: {
+        justifyContent: 'center',
+        flexGrow: '4',
     },
     cardActions: {
         display: 'flex',
@@ -199,20 +200,6 @@ const TVShows = () => {
         setFilter(e.target.value);
     };
 
-    const renderAvatar = (memType) => {
-        if ((memType === "Music")) {
-            return <MusicIcon style={{ color: 'white' }} />
-        } else if ((memType === "Movie")) {
-            return <MovieIcon style={{ color: 'white' }} />
-        } else if ((memType === "TVShow")) {
-            return <TVIcon style={{ color: 'white' }} />
-        } else if ((memType === "Game")) {
-            return <GameIcon style={{ color: 'white' }} />
-        } else if ((memType === "Event")) {
-            return <EventIcon style={{ color: 'white' }} />
-        }
-    }
-
     const renderPicture = (memType, memID) => {
         if ((memType === "Music")) {
             return ((memID.music.map((albumArt) => (albumArt.albumArt))).toString())
@@ -274,28 +261,14 @@ const TVShows = () => {
     // }
 
     const { loading, data, error } = useQuery(GET_MEM)
-    if (loading) return <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '395px' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Remembering...</p></div>
+    if (loading) return <Loading />
     if (error) return <p style={{ textAlign: "center" }} >Error</p>
 
     const getMemsCard = () => {
         return data.Mem.map((memID, i) => (
             (memID.mem.toLocaleLowerCase()).includes(filter) &&
-            < Grid item xs={12} sm={4} lg={3} key={i} >
+            < Grid item sm={'auto'} md={'auto'} lg={'auto'} key={i} >
                 <Card className={classes.card}>
-                    <div className={classes.topBar}>
-                        {
-                            <Avatar aria-label="memory" className={classes.avatar}>
-                                {renderAvatar(memID.memType)}
-                            </Avatar>
-                        }
-                        <div className={classes.titleText}>
-                            {<span style={{ fontSize: '12px', fontWeight: '550' }}>{memID.person.nickname}</span>}
-                            {<span style={{ fontSize: '10px' }}>{memID.date.day}-{memID.date.month}-{memID.date.year}</span>}
-                        </div>
-                        {
-                            <span className={classes.emoji}>{memID.emoji}</span>
-                        }
-                    </div>
                     <>
                         {(renderPicture(memID.memType, memID)) ? (
                             <CardMedia
@@ -304,13 +277,17 @@ const TVShows = () => {
                                 style={{ width: "100%" }}
                             />
                         ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Loading...</p></div>
+                                <Loading />
                             )}
                     </>
                     <CardActions className={classes.cardActions} style={{ justifyContent: 'flex-end' }}>
                         <div className={classes.details}>{renderDetails(memID.memType, memID)}</div>
-                        {renderFavourite(memID.favourite)}
-                        {renderPublic(memID.public)}
+                        <span className={classes.emoji}>{memID.emoji}</span>
+                        {<span className={classes.memsDate} style={{ fontSize: '10px' }}>{memID.date.day}-{memID.date.month}-{memID.date.year}</span>}
+                        <div className={classes.cardActionButtons}>
+                            {renderFavourite(memID.favourite)}
+                            {renderPublic(memID.public)}
+                        </div>
                         {/* <IconButton onClick={handleClick} style={{ margin: "0px", padding: "10px", color: "black" }} aria-label="share">
                             <ShareIcon />
                         </IconButton> */}
@@ -321,7 +298,7 @@ const TVShows = () => {
     };
 
     return (
-        <Grid container spacing={2} className={classes.memsGridContainer}>
+        <Grid container justify='center' spacing={2} className={classes.memsGridContainer}>
             <div className={classes.topBox}>
                 <Box boxShadow={1} borderRadius={4} className={classes.searchContainer}>
                     <SearchIcon className={classes.searchIcon} />

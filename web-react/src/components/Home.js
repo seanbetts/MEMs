@@ -1,8 +1,6 @@
 import React from 'react'
 import { Nav } from "react-bootstrap";
 
-import UserAccount from './UserAccount/UserAccount'
-
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "./Logout-Button";
 import LoginButton from "./Login-Button";
@@ -114,8 +112,8 @@ export default function Home() {
                 <div id="logo">
                     <img
                         className={classes.logo}
-                        src="img/mems-logo.png"
-                        alt="mems logo"
+                        src="https://storage.googleapis.com/mems-images/images/mems-logo-large.png"
+                        alt="MEMs logo"
                     />
                 </div>
                 <div id="strap" className={classes.strap}>

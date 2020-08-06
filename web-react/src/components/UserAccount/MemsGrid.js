@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import Loading from "../Loading";
 import { makeStyles } from '@material-ui/core/styles'
 import {
-    CircularProgress,
     Grid,
     Box,
     Card,
@@ -80,7 +80,15 @@ const useStyles = makeStyles(() => ({
         backgroundColor: 'white',
 
     },
+    cardContainer: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     card: {
+        width: '263px',
+        minWidth: '263px',
     },
     cardMedia: {
         margin: 'auto',
@@ -156,6 +164,9 @@ const GET_MEM = gql`
       placeID @skip(if: false)
       favourite
       public
+      event {
+          image
+      }
       person {
         nickname
       }
@@ -223,7 +234,7 @@ const MemsGrid = () => {
         } else if ((memType === "Game")) {
             return ((memID.game.map((boxArt) => (boxArt.boxArt))).toString())
         } else if ((memType === "Event")) {
-            return require('../../img/historyHead.png')
+            return ((memID.event.map((image) => (image.image))).toString())
         }
     }
 
@@ -274,13 +285,13 @@ const MemsGrid = () => {
     // }
 
     const { loading, data, error } = useQuery(GET_MEM)
-    if (loading) return <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Loading...</p></div>
+    if (loading) return <Loading />
     if (error) return <p style={{ textAlign: "center" }} >Error</p>
 
     const getMemsCard = () => {
         return data.Mem.map((memID, i) => (
             (memID.mem.toLocaleLowerCase()).includes(filter) &&
-            < Grid item xs={12} sm={4} lg={3} key={i} >
+            < Grid item sm={'auto'} md={'auto'} lg={'auto'} key={i}>
                 <Card className={classes.card}>
                     <div className={classes.topBar}>
                         {
@@ -304,7 +315,7 @@ const MemsGrid = () => {
                                 style={{ width: "100%" }}
                             />
                         ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}><CircularProgress color="#000000" /> <p style={{ textAlign: "center" }} >Loading...</p></div>
+                                <Loading />
                             )}
                     </>
                     <CardActions className={classes.cardActions} style={{ justifyContent: 'flex-end' }}>
@@ -321,7 +332,7 @@ const MemsGrid = () => {
     };
 
     return (
-        <Grid container spacing={2} className={classes.memsGridContainer}>
+        <Grid container justify='center' spacing={2} className={classes.memsGridContainer}>
             <div className={classes.topBox}>
                 <Box boxShadow={1} borderRadius={4} className={classes.searchContainer}>
                     <SearchIcon className={classes.searchIcon} />

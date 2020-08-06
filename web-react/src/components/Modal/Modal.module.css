@@ -1,0 +1,21 @@
+.AddMemModal {
+    position: fixed;
+    z-index: 500;
+    background-color: white;
+    width: 70%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    padding-top: 0px;
+    left: 15%;
+    top: 15%;
+    box-sizing: border-box;
+    transition: all 0.8s ease;
+}
+
+@media (min-width: 600px) {
+    .AddMemModal {
+        width: 750px;
+        left: calc(50% - 350px);
+    }
+}
