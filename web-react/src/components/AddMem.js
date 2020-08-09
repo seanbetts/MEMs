@@ -1,6 +1,6 @@
 import React from 'react'
 import gql from 'graphql-tag'
-import { createClient, Provider, useMutation } from 'urql'
+import { Provider, createClient, useMutation } from 'urql'
 import Loading from './Loading'
 import { Formik, Form, useField, useFormikContext } from 'formik'
 import * as Yup from 'yup'
@@ -116,7 +116,9 @@ const StyledSelect = styled.select`
 const StyledLabel = styled.label`
   margin-top: 1rem;
 `
-const client = createClient({ url: '/graphql' })
+const client = createClient({
+  url: 'https://localhost:4001/graphql', // Your GraphQL endpoint here
+})
 
 const CREATE_EVENT = gql`
   mutation(
@@ -217,7 +219,7 @@ class Thumb extends React.Component {
     thumb: undefined,
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!nextProps.file) {
       return
     }
