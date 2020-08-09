@@ -1,6 +1,6 @@
 import React from 'react'
 import gql from 'graphql-tag'
-import { useMutation } from 'urql'
+import { createClient, Provider, useMutation } from 'urql'
 import Loading from './Loading'
 import { Formik, Form, useField, useFormikContext } from 'formik'
 import * as Yup from 'yup'
@@ -116,6 +116,7 @@ const StyledSelect = styled.select`
 const StyledLabel = styled.label`
   margin-top: 1rem;
 `
+const client = createClient({ url: '/graphql' })
 
 const CREATE_EVENT = gql`
   mutation(
@@ -304,110 +305,126 @@ const AddMem = () => {
 
   return (
     <>
-      <h2>Add a new MEM to your collection</h2>
-      <Formik
-        initialValues={{
-          memType: '',
-          memName: '',
-          memDate: '',
-          image: '',
-          favourite: '',
-          public: '',
-        }}
-        validationSchema={Yup.object({
-          memType: Yup.string()
-            .oneOf(
-              ['event', 'person', 'place', 'music', 'movie', 'tvshow', 'game'],
-              'Invalid MEM Type'
+      <Provider value={client}>
+        <h2>Add a new MEM to your collection</h2>
+        <Formik
+          initialValues={{
+            memType: '',
+            memName: '',
+            memDate: '',
+            image: '',
+            favourite: '',
+            public: '',
+          }}
+          validationSchema={Yup.object({
+            memType: Yup.string()
+              .oneOf(
+                [
+                  'event',
+                  'person',
+                  'place',
+                  'music',
+                  'movie',
+                  'tvshow',
+                  'game',
+                ],
+                'Invalid MEM Type'
+              )
+              .required('Required'),
+            memName: Yup.string()
+              .max(20, 'Must be 20 characters or less')
+              .required('Required'),
+            memDate: Yup.date()
+              .default(() => new Date())
+              .required('Required'),
+            favourite: Yup.boolean().oneOf([true], [false]),
+            public: Yup.boolean().oneOf([true], [false]),
+          })}
+          onSubmit={async (values, { setSubmitting }) => {
+            await new Promise((r) => setTimeout(r, 500))
+            setSubmitting(false)
+          }}
+        >
+          {(props) => {
+            const { values, isSubmitting, setFieldValue } = props
+            return (
+              <Form autoComplete="off" className={classes.addMemForm}>
+                <div className={classes.memFormMain}>
+                  <div className={classes.memFormDetails}>
+                    <MySelect
+                      label="MEM Type"
+                      name="memType"
+                      className={classes.memSelectField}
+                    >
+                      <option value="">Select a MEM type</option>
+                      <option value="event">Event</option>
+                      <option value="person">Person</option>
+                      <option value="place">Place</option>
+                      <option value="music">Music</option>
+                      <option value="movie">Movie</option>
+                      <option value="tvshow">TV Show</option>
+                      <option value="game">Game</option>
+                    </MySelect>
+                    <MyTextInput
+                      className={classes.memTextField}
+                      label="MEM Name"
+                      name="memName"
+                      type="text"
+                      placeholder="<hello, world>"
+                    />
+                    <div>MEM Date</div>
+                    <MyDate
+                      className={classes.memTextField}
+                      name="memDate"
+                      value={values.date}
+                      onChange={setFieldValue}
+                    />
+                  </div>
+                  <div className={classes.memFormImage}>
+                    <Thumb file={values.file} />
+                    <input
+                      id="file"
+                      name="file"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => {
+                        setFieldValue('file', event.currentTarget.files[0])
+                      }}
+                      className={classes.memImage}
+                    />
+                  </div>
+                </div>
+                <div className={classes.memFormOptions}>
+                  <div className={classes.memFormCheckboxes}>
+                    <MyCheckbox
+                      name="favourite"
+                      className={classes.memCheckbox}
+                    >
+                      This MEM is a favourite!
+                    </MyCheckbox>
+                    <MyCheckbox
+                      name="broadcast"
+                      className={classes.memCheckbox}
+                    >
+                      I want to share this MEM far and wide...
+                    </MyCheckbox>
+                  </div>
+                  <div className={classes.buttonContainer}>
+                    <Button
+                      type="submit"
+                      onClick={() => postImage(props.values.file, values)}
+                      disabled={isSubmitting}
+                      className={classes.saveMem}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              </Form>
             )
-            .required('Required'),
-          memName: Yup.string()
-            .max(20, 'Must be 20 characters or less')
-            .required('Required'),
-          memDate: Yup.date()
-            .default(() => new Date())
-            .required('Required'),
-          favourite: Yup.boolean().oneOf([true], [false]),
-          public: Yup.boolean().oneOf([true], [false]),
-        })}
-        onSubmit={async (values, { setSubmitting }) => {
-          await new Promise((r) => setTimeout(r, 500))
-          setSubmitting(false)
-        }}
-      >
-        {(props) => {
-          const { values, isSubmitting, setFieldValue } = props
-          return (
-            <Form autoComplete="off" className={classes.addMemForm}>
-              <div className={classes.memFormMain}>
-                <div className={classes.memFormDetails}>
-                  <MySelect
-                    label="MEM Type"
-                    name="memType"
-                    className={classes.memSelectField}
-                  >
-                    <option value="">Select a MEM type</option>
-                    <option value="event">Event</option>
-                    <option value="person">Person</option>
-                    <option value="place">Place</option>
-                    <option value="music">Music</option>
-                    <option value="movie">Movie</option>
-                    <option value="tvshow">TV Show</option>
-                    <option value="game">Game</option>
-                  </MySelect>
-                  <MyTextInput
-                    className={classes.memTextField}
-                    label="MEM Name"
-                    name="memName"
-                    type="text"
-                    placeholder="<hello, world>"
-                  />
-                  <div>MEM Date</div>
-                  <MyDate
-                    className={classes.memTextField}
-                    name="memDate"
-                    value={values.date}
-                    onChange={setFieldValue}
-                  />
-                </div>
-                <div className={classes.memFormImage}>
-                  <Thumb file={values.file} />
-                  <input
-                    id="file"
-                    name="file"
-                    type="file"
-                    accept="image/*"
-                    onChange={(event) => {
-                      setFieldValue('file', event.currentTarget.files[0])
-                    }}
-                    className={classes.memImage}
-                  />
-                </div>
-              </div>
-              <div className={classes.memFormOptions}>
-                <div className={classes.memFormCheckboxes}>
-                  <MyCheckbox name="favourite" className={classes.memCheckbox}>
-                    This MEM is a favourite!
-                  </MyCheckbox>
-                  <MyCheckbox name="broadcast" className={classes.memCheckbox}>
-                    I want to share this MEM far and wide...
-                  </MyCheckbox>
-                </div>
-                <div className={classes.buttonContainer}>
-                  <Button
-                    type="submit"
-                    onClick={() => postImage(props.values.file, values)}
-                    disabled={isSubmitting}
-                    className={classes.saveMem}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-            </Form>
-          )
-        }}
-      </Formik>
+          }}
+        </Formik>
+      </Provider>
     </>
   )
 }
