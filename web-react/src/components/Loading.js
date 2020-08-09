@@ -1,5 +1,4 @@
 import React from 'react'
-import { insert } from 'formik'
 
 const Loading = () => (
   <div
