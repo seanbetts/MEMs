@@ -116,10 +116,7 @@ app.post('/uploads', async (req, res, next) => {
     const myFile = req.file
     const imageUrl = await uploadImage(myFile)
     res
-      .header(
-        'Access-Control-Allow-Origin',
-        'http://localhost:3000, https://mems.life/'
-      ) //origin URLs
+      .header('Access-Control-Allow-Origin', 'http://localhost:3000') //origin URLs
       .status(200)
       .json({
         message: 'Upload was successful',

@@ -4,7 +4,7 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import Title from '../.././Title'
 
@@ -30,7 +30,7 @@ const GET_RECENT_MEMS_QUERY = gql`
         place
       }
       music {
-          albumArt
+        albumArt
       }
       movie {
         poster
@@ -39,7 +39,7 @@ const GET_RECENT_MEMS_QUERY = gql`
         poster
       }
       game {
-          boxArt
+        boxArt
       }
     }
   }

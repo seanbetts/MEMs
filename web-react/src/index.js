@@ -1,25 +1,29 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom'
 import Auth0ProviderWithHistory from './auth0-provider-with-history'
 
-import Loading from './components/Loading';
-import PrivateRoute from './components/Private-Route';
+import Loading from './components/Loading'
+import PrivateRoute from './components/Private-Route'
 
 import './index.css'
 
-import Home from './components/Home';
-import UserAccount from './components/UserAccount/UserAccount';
-import NotFoundPage from './NotFoundPage';
+import Home from './components/Home'
+import UserAccount from './components/UserAccount/UserAccount'
+import NotFoundPage from './NotFoundPage'
 
-// import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 
-import ApolloClient from 'apollo-boost'
-import { ApolloProvider } from '@apollo/react-hooks'
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URI || '/graphql',
+  cache: new InMemoryCache(),
 })
 
 const Main = () => (
@@ -44,4 +48,4 @@ const Main = () => (
 ReactDOM.render(<Main />, document.getElementById('root'))
 registerServiceWorker()
 
-export { Loading, PrivateRoute };
+export { Loading, PrivateRoute }
