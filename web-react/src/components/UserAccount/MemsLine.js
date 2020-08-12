@@ -9,8 +9,7 @@ import {
   TimelineContent,
   TimelineDot,
 } from '@material-ui/lab'
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import Loading from '../Loading'
 import { CssBaseline } from '@material-ui/core'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'

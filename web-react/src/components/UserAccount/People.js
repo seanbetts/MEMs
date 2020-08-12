@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery } from '@apollo/client'
-import gql from 'graphql-tag'
+import { gql, useQuery } from '@apollo/client'
 import Loading from '../Loading'
 import { makeStyles } from '@material-ui/core/styles'
 import {
