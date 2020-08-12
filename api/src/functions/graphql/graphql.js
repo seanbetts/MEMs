@@ -10,18 +10,24 @@ const neo4j = require('neo4j-driver')
 const { typeDefs } = require('./graphql-schema')
 
 const driver = neo4j.driver(
-  process.env.NEO4J_URI || 'bolt://35.234.149.240:7687/graphql',
+  process.env.NEO4J_URI || 'neo4j://graph.mems.life:7687',
   neo4j.auth.basic(
     process.env.NEO4J_USER || 'neo4j',
     process.env.NEO4J_PASSWORD || '72fofH0oav'
   ),
   {
     encrypted: process.env.NEO4J_ENCRYPTED ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF',
-    trust: "TRUST_CUSTOM_CA_SIGNED_CERTIFICATES",
-    trustedCertificates: ['../../certificates/neo4j.cert', '../../certificates/cert.pem', '../../certificates/chain.pem', '../../certificates/fullchain.pem', '../../certificates/privkey.pem'],
+    trust: 'TRUST_CUSTOM_CA_SIGNED_CERTIFICATES',
+    trustedCertificates: [
+      '../../certificates/neo4j.cert',
+      '../../certificates/cert.pem',
+      '../../certificates/chain.pem',
+      '../../certificates/fullchain.pem',
+      '../../certificates/privkey.pem',
+    ],
     logging: {
       level: 'debug',
-      logger: (level, message) => console.log(level + ' ' + message)
+      logger: (level, message) => console.log(level + ' ' + message),
     },
   }
 )

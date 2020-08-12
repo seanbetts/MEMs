@@ -84,7 +84,7 @@ const server = new ApolloServer({
 
 // Specify host, port and path for GraphQL endpoint
 const port = process.env.GRAPHQL_SERVER_PORT || 4001
-const path = process.env.GRAPHQL_SERVER_PATH || 'graph.mems.life' //graphql
+const path = process.env.GRAPHQL_SERVER_PATH || 'graphql'
 const host = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
 
 // Code for uploading files to Google Cloud
@@ -116,10 +116,7 @@ app.post('/uploads', async (req, res, next) => {
     const myFile = req.file
     const imageUrl = await uploadImage(myFile)
     res
-      .header(
-        'Access-Control-Allow-Origin',
-        'http://localhost:3000, https://mems.life/'
-      ) //origin URLs
+      .header('Access-Control-Allow-Origin', 'http://localhost:3000') //origin URLs
       .status(200)
       .json({
         message: 'Upload was successful',
