@@ -19,15 +19,11 @@ import NotFoundPage from './NotFoundPage'
 
 import registerServiceWorker from './registerServiceWorker'
 
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-
-const client = new ApolloClient({
-  uri: process.env.REACT_APP_GRAPHQL_URI || '/graphql',
-  cache: new InMemoryCache(),
-})
+import { ApolloProvider } from '@apollo/client'
+import Client from './components/ApolloClient'
 
 const Main = () => (
-  <ApolloProvider client={client}>
+  <ApolloProvider client={Client}>
     <div className="App container">
       <div className="jumbotron">
         <Router>
